@@ -1,0 +1,260 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { ShieldCheck, Info, UserCheck, ChevronDown, Bell } from 'lucide-react';
+import { colors } from '../theme/colors';
+import { ScreenName, UserRole } from '../types';
+import { useAuth } from '../context/AuthContext';
+
+interface HeaderProps {
+  currentScreen: ScreenName;
+  onNavigate: (screen: ScreenName) => void;
+  isBackendConnected: boolean;
+  activeDevice?: string;
+  unreadNotificationsCount?: number;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  currentScreen,
+  onNavigate,
+  isBackendConnected,
+  activeDevice = 'CPU',
+  unreadNotificationsCount = 0,
+}) => {
+  const { user, role, switchDemoRole } = useAuth();
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
+
+  const handleRoleSwitch = async (targetRole: UserRole) => {
+    setShowRoleMenu(false);
+    await switchDemoRole(targetRole);
+    if (targetRole === 'FARMER') onNavigate('home');
+    else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
+    else if (targetRole === 'ADMIN') onNavigate('admin');
+  };
+
+  const getRoleLabel = () => {
+    if (role === 'MIDDLEMAN') return 'Middleman';
+    if (role === 'ADMIN') return 'Supervisor';
+    return 'Farmer';
+  };
+
+  return (
+    <View style={styles.headerContainer}>
+      <View style={styles.topRow}>
+        <TouchableOpacity
+          style={styles.brandingRow}
+          onPress={() => {
+            if (role === 'MIDDLEMAN') onNavigate('middleman_home');
+            else if (role === 'ADMIN') onNavigate('admin');
+            else onNavigate('home');
+          }}
+          activeOpacity={0.8}
+        >
+          <Image
+            source={{ uri: '/logo.png' }}
+            style={styles.headerLogoImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+
+        <View style={styles.rightActions}>
+          {/* Quick Role Switcher for Hackathon Demo */}
+          <View style={styles.roleDropdownWrapper}>
+            <TouchableOpacity
+              style={styles.roleSelector}
+              onPress={() => setShowRoleMenu(!showRoleMenu)}
+              activeOpacity={0.8}
+            >
+              <UserCheck size={14} color={colors.primary} />
+              <Text style={styles.roleText}>{getRoleLabel()}</Text>
+              <ChevronDown size={12} color={colors.textSecondary} />
+            </TouchableOpacity>
+
+            {showRoleMenu && (
+              <View style={styles.roleMenu}>
+                <TouchableOpacity
+                  style={[styles.roleMenuItem, role === 'FARMER' && styles.roleMenuItemActive]}
+                  onPress={() => handleRoleSwitch('FARMER')}
+                >
+                  <Text style={styles.roleMenuText}>🌾 Farmer (Ramesh)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.roleMenuItem, role === 'MIDDLEMAN' && styles.roleMenuItemActive]}
+                  onPress={() => handleRoleSwitch('MIDDLEMAN')}
+                >
+                  <Text style={styles.roleMenuText}>🤝 Middleman (Kishore)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.roleMenuItem, role === 'ADMIN' && styles.roleMenuItemActive]}
+                  onPress={() => handleRoleSwitch('ADMIN')}
+                >
+                  <Text style={styles.roleMenuText}>🛡️ Admin (Supervisor)</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          {/* Model Status */}
+          <View
+            style={[
+              styles.connectionBadge,
+              isBackendConnected ? styles.connOnline : styles.connOffline,
+            ]}
+          >
+            <View
+              style={[
+                styles.statusDot,
+                isBackendConnected ? styles.dotOnline : styles.dotOffline,
+              ]}
+            />
+            <Text style={styles.connText}>
+              {isBackendConnected ? `Model: ${activeDevice}` : 'Connecting...'}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.iconButton,
+              currentScreen === 'system_info' && styles.iconButtonActive,
+            ]}
+            onPress={() => onNavigate('system_info')}
+            title="System Info"
+          >
+            <Info
+              size={18}
+              color={currentScreen === 'system_info' ? colors.primary : colors.textSecondary}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    zIndex: 100,
+  },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  brandingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  headerLogoImage: {
+    width: 64,
+    height: 64,
+  },
+  rightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  roleDropdownWrapper: {
+    position: 'relative',
+    zIndex: 101,
+  },
+  roleSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: colors.primarySoft,
+    borderWidth: 1,
+    borderColor: colors.primaryBorder,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 14,
+  },
+  roleText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  roleMenu: {
+    position: 'absolute',
+    top: 32,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+    padding: 4,
+    width: 170,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 102,
+  },
+  roleMenuItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+  },
+  roleMenuItemActive: {
+    backgroundColor: colors.primarySoft,
+  },
+  roleMenuText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  connectionBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  connOnline: {
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primaryBorder,
+  },
+  connOffline: {
+    backgroundColor: colors.warningBg,
+    borderColor: colors.accentBorder,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  dotOnline: {
+    backgroundColor: colors.primaryLight,
+  },
+  dotOffline: {
+    backgroundColor: colors.accent,
+  },
+  connText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  iconButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceSubtle,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  iconButtonActive: {
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primaryBorder,
+  },
+});

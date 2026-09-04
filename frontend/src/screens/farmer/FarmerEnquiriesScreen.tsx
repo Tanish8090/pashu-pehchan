@@ -1,0 +1,353 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {
+  MessageSquare,
+  Phone,
+  Check,
+  X,
+  Clock,
+  User,
+  ShieldCheck,
+} from 'lucide-react';
+import { colors } from '../../theme/colors';
+import { ScreenName, Enquiry } from '../../types';
+import * as api from '../../services/api';
+import { initiatePhoneCall } from '../../components/adapters/contact';
+
+interface FarmerEnquiriesScreenProps {
+  onNavigate: (screen: ScreenName) => void;
+}
+
+export const FarmerEnquiriesScreen: React.FC<FarmerEnquiriesScreenProps> = ({
+  onNavigate,
+}) => {
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadEnquiries();
+  }, []);
+
+  const loadEnquiries = async () => {
+    setLoading(true);
+    try {
+      const data = await api.getEnquiries();
+      setEnquiries(data);
+    } catch (err) {
+      console.warn('Failed to load enquiries:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (id: number, status: 'ACCEPTED' | 'REJECTED') => {
+    try {
+      await api.updateEnquiryStatus(id, status);
+      setEnquiries(
+        enquiries.map((e) => (e.id === id ? { ...e, status } : e))
+      );
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Buyer Enquiries</Text>
+        <Text style={styles.subtitle}>
+          Direct offers from middlemen and verified buyers for your livestock
+        </Text>
+      </View>
+
+      {loading ? (
+        <View style={styles.loadingBox}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loadingText}>Fetching enquiries...</Text>
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.list}>
+          {enquiries.length === 0 ? (
+            <View style={styles.emptyCard}>
+              <MessageSquare size={36} color={colors.textMuted} />
+              <Text style={styles.emptyTitle}>No pending enquiries</Text>
+              <Text style={styles.emptySub}>
+                When middlemen make offers on your marketplace listings, they will appear here.
+              </Text>
+            </View>
+          ) : (
+            enquiries.map((enquiry) => (
+              <View key={enquiry.id} style={styles.card}>
+                <View style={styles.cardTop}>
+                  <View style={styles.buyerInfo}>
+                    <View style={styles.buyerAvatar}>
+                      <User size={18} color={colors.primary} />
+                    </View>
+                    <View>
+                      <Text style={styles.buyerName}>
+                        {enquiry.sender_name || 'Kishore Bhai (Middleman)'}
+                      </Text>
+                      <Text style={styles.listingRef}>
+                        Regarding: {enquiry.listing_title || 'Gir Cow #105'}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      enquiry.status === 'ACCEPTED' && { backgroundColor: colors.successBg },
+                      enquiry.status === 'REJECTED' && { backgroundColor: colors.dangerBg },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.statusText,
+                        enquiry.status === 'ACCEPTED' && { color: colors.success },
+                        enquiry.status === 'REJECTED' && { color: colors.danger },
+                      ]}
+                    >
+                      {enquiry.status}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Offer Price Highlight */}
+                {enquiry.offered_price && (
+                  <View style={styles.priceOfferRow}>
+                    <Text style={styles.offerLabel}>Offered Price:</Text>
+                    <Text style={styles.offerValue}>
+                      ₹{enquiry.offered_price.toLocaleString('en-IN')}
+                    </Text>
+                  </View>
+                )}
+
+                <Text style={styles.messageBox}>"{enquiry.message}"</Text>
+
+                {/* Actions */}
+                <View style={styles.actionRow}>
+                  {enquiry.sender_phone && (
+                    <TouchableOpacity
+                      style={styles.callBtn}
+                      onPress={() => initiatePhoneCall(enquiry.sender_phone || '9876543210')}
+                    >
+                      <Phone size={13} color="#ffffff" />
+                      <Text style={styles.callBtnText}>Call Buyer</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {enquiry.status === 'PENDING' && (
+                    <View style={styles.decisionBtns}>
+                      <TouchableOpacity
+                        style={styles.rejectBtn}
+                        onPress={() => handleUpdateStatus(enquiry.id, 'REJECTED')}
+                      >
+                        <X size={14} color={colors.danger} />
+                        <Text style={styles.rejectBtnText}>Decline</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.acceptBtn}
+                        onPress={() => handleUpdateStatus(enquiry.id, 'ACCEPTED')}
+                      >
+                        <Check size={14} color="#ffffff" />
+                        <Text style={styles.acceptBtnText}>Accept Offer</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  header: {
+    padding: 16,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  subtitle: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  list: {
+    padding: 16,
+    gap: 12,
+  },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: 10,
+  },
+  cardTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buyerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  buyerAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buyerName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  listingRef: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    marginTop: 1,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: colors.warningBg,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.warning,
+  },
+  priceOfferRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#f8faf9',
+    padding: 8,
+    borderRadius: 6,
+  },
+  offerLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  offerValue: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.primaryDark,
+  },
+  messageBox: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: colors.textPrimary,
+    lineHeight: 16,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: colors.borderLight,
+    paddingTop: 8,
+  },
+  callBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 6,
+  },
+  callBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  decisionBtns: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  rejectBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.danger,
+    backgroundColor: colors.surface,
+  },
+  rejectBtnText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: colors.danger,
+  },
+  acceptBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 6,
+    backgroundColor: colors.success,
+  },
+  acceptBtnText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  loadingBox: {
+    padding: 40,
+    alignItems: 'center',
+    gap: 10,
+  },
+  loadingText: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  emptyCard: {
+    backgroundColor: colors.surface,
+    padding: 30,
+    borderRadius: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: 8,
+  },
+  emptyTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  emptySub: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+});
