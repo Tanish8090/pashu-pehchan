@@ -69,12 +69,15 @@ export async function saveRecord(payload: RecordCreate): Promise<RecordResponse>
   });
 }
 
-export async function getRecords(params?: {
-  search?: string;
-  status?: string;
-  limit?: number;
-  offset?: number;
-}): Promise<RecordResponse[]> {
+export async function getRecords(
+  params?: {
+    search?: string;
+    status?: string;
+    limit?: number;
+    offset?: number;
+  },
+  options?: RequestInit
+): Promise<RecordResponse[]> {
   const query = new URLSearchParams();
   if (params?.search) query.append('search', params.search);
   if (params?.status && params.status !== 'All') query.append('status', params.status);
@@ -82,7 +85,7 @@ export async function getRecords(params?: {
   if (params?.offset) query.append('offset', String(params.offset));
 
   const qs = query.toString();
-  return apiRequest<RecordResponse[]>(`/api/records${qs ? `?${qs}` : ''}`);
+  return apiRequest<RecordResponse[]>(`/api/records${qs ? `?${qs}` : ''}`, options);
 }
 
 export async function getDashboardStats(): Promise<DashboardResponse> {

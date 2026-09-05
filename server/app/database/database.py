@@ -220,6 +220,13 @@ def init_db():
         )
         """)
 
+        # Optimize query performance with targeted indexes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_animals_verification_status ON animals(verification_status)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_animals_id_desc ON animals(id DESC)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_animals_identifier ON animals(animal_identifier)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_animals_breed ON animals(breed)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_animals_verified_breed ON animals(verified_breed)")
+
         conn.commit()
 
     # Seed demo ecosystem data
@@ -1060,7 +1067,20 @@ def get_records(
     limit: int = 50,
     offset: int = 0
 ) -> List[Dict[str, Any]]:
-    return get_animals(search=search)
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        query = "SELECT * FROM animals WHERE 1=1"
+        params = []
+        if search:
+            query += " AND (animal_identifier LIKE ? OR pashu_aadhaar LIKE ? OR breed LIKE ? OR verified_breed LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%"])
+        if status_filter and status_filter != "All":
+            query += " AND verification_status = ?"
+            params.append(status_filter)
+        query += " ORDER BY id DESC LIMIT ? OFFSET ?"
+        params.extend([limit, offset])
+        cursor.execute(query, params)
+        return [dict(r) for r in cursor.fetchall()]
 
 def get_record_by_id(record_id: int) -> Optional[Dict[str, Any]]:
     return get_animal_by_id(record_id)
