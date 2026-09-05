@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { colors } from '../theme/colors';
 import { GuidanceCard } from '../components/GuidanceCard';
+import { CameraModal } from '../components/adapters/camera';
 import { predictImage } from '../services/api';
 import { PredictResponse } from '../types';
 
@@ -46,6 +47,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
   const [loading, setLoading] = useState(false);
   const [loadingSample, setLoadingSample] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [cameraModalOpen, setCameraModalOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -94,6 +96,31 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
     setErrorMsg(null);
   };
 
+  const handleCameraClick = () => {
+    setErrorMsg(null);
+    if (Platform.OS === 'web') {
+      setCameraModalOpen(true);
+    } else {
+      (cameraInputRef.current as any)?.click();
+    }
+  };
+
+  const handleCameraCapture = (file: File | Blob | any, url: string) => {
+    setErrorMsg(null);
+    setSelectedImage(file);
+    setPreviewUrl(url);
+    setCameraModalOpen(false);
+  };
+
+  const handleCameraClose = () => {
+    setCameraModalOpen(false);
+  };
+
+  const handleUploadFallback = () => {
+    setCameraModalOpen(false);
+    (fileInputRef.current as any)?.click();
+  };
+
   const loadSample = async (breedName: string) => {
     setLoadingSample(true);
     setErrorMsg(null);
@@ -135,10 +162,11 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
   };
 
   return (
-    <ScrollView
-      style={isDesktop ? styles.desktopScrollView : styles.container}
-      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
-    >
+    <>
+      <ScrollView
+        style={isDesktop ? styles.desktopScrollView : styles.container}
+        contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+      >
       {/* Hidden file inputs for Web */}
       {Platform.OS === 'web' && (
         <>
@@ -184,11 +212,20 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
                 <View style={styles.retakeRow}>
                   <TouchableOpacity
                     style={styles.retakeButton}
+                    onPress={handleCameraClick}
+                    activeOpacity={0.8}
+                  >
+                    <Camera size={14} color={colors.primary} />
+                    <Text style={styles.retakeText}>Retake Camera</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.retakeButton}
                     onPress={() => (fileInputRef.current as any)?.click()}
                     activeOpacity={0.8}
                   >
-                    <RefreshCw size={14} color={colors.primary} />
-                    <Text style={styles.retakeText}>Change Photo</Text>
+                    <Upload size={14} color={colors.primary} />
+                    <Text style={styles.retakeText}>Upload Other</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -206,7 +243,7 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
                 <View style={styles.uploadButtonsRow}>
                   <TouchableOpacity
                     style={styles.cameraActionButton}
-                    onPress={() => (cameraInputRef.current as any)?.click()}
+                    onPress={handleCameraClick}
                     activeOpacity={0.85}
                   >
                     <Camera size={18} color="#ffffff" />
@@ -323,6 +360,15 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
         </View>
       </View>
     </ScrollView>
+
+    {/* Web & Mobile Cross-Platform Camera Viewfinder Modal */}
+    <CameraModal
+      isOpen={cameraModalOpen}
+      onCapture={handleCameraCapture}
+      onClose={handleCameraClose}
+      onUploadFallback={handleUploadFallback}
+    />
+  </>
   );
 };
 

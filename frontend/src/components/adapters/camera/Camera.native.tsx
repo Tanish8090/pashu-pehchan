@@ -9,6 +9,67 @@ export interface CameraCaptureProps {
   disabled?: boolean;
 }
 
+export interface CameraModalProps {
+  isOpen: boolean;
+  onCapture: (file: any, previewUrl: string) => void;
+  onClose: () => void;
+  onUploadFallback?: () => void;
+}
+
+export const CameraModal: React.FC<CameraModalProps> = ({
+  isOpen,
+  onCapture,
+  onClose,
+}) => {
+  const handleLaunchCamera = async () => {
+    try {
+      let ImagePicker: any = null;
+      try {
+        ImagePicker = require('expo-image-picker');
+      } catch (e) {
+        console.warn('expo-image-picker not installed or available');
+      }
+
+      if (ImagePicker) {
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+          alert('Camera permission is required!');
+          onClose();
+          return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 0.85,
+        });
+
+        if (!result.canceled && result.assets && result.assets[0]) {
+          const uri = result.assets[0].uri;
+          const fileData = {
+            uri,
+            type: 'image/jpeg',
+            name: `cattle_capture_${Date.now()}.jpg`,
+          };
+          onCapture(fileData, uri);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to take native photo:', err);
+    } finally {
+      onClose();
+    }
+  };
+
+  React.useEffect(() => {
+    if (isOpen) {
+      handleLaunchCamera();
+    }
+  }, [isOpen]);
+
+  return null;
+};
+
 export const CameraCapture: React.FC<CameraCaptureProps> = ({
   onCapture,
   onCancel,
