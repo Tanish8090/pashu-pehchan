@@ -1,4 +1,4 @@
-import { apiRequest } from './client';
+import { apiRequest, setAuthToken } from './client';
 import { AuthResponse, User } from '../../types';
 import { setItem, removeItem } from '../../components/adapters/storage';
 
@@ -12,6 +12,7 @@ export async function login(email: string, password: string): Promise<AuthRespon
     }),
   });
   if (data.access_token) {
+    setAuthToken(data.access_token);
     await setItem('vetra_auth_token', data.access_token);
     await setItem('vetra_user', JSON.stringify(data.user));
   }
@@ -32,6 +33,7 @@ export async function register(payload: {
     body: JSON.stringify(payload),
   });
   if (data.access_token) {
+    setAuthToken(data.access_token);
     await setItem('vetra_auth_token', data.access_token);
     await setItem('vetra_user', JSON.stringify(data.user));
   }
@@ -48,6 +50,7 @@ export async function logout(): Promise<void> {
   } catch {
     // ignore
   }
+  setAuthToken(null);
   await removeItem('vetra_auth_token');
   await removeItem('vetra_user');
 }

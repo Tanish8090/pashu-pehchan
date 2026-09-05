@@ -29,16 +29,27 @@ export async function getListingById(id: number): Promise<MarketplaceListing> {
 
 export async function createListing(payload: {
   animal_id: number;
-  asking_price: number;
+  asking_price?: number;
+  price?: number;
   negotiable?: number;
   title: string;
   description?: string;
+  contact_phone?: string;
+  district?: string;
   location_district?: string;
   location_state?: string;
 }): Promise<MarketplaceListing> {
+  const body = {
+    animal_id: payload.animal_id,
+    title: payload.title,
+    price: payload.price !== undefined ? payload.price : (payload.asking_price || 0),
+    description: payload.description,
+    contact_phone: payload.contact_phone,
+    district: payload.district || payload.location_district || 'Anand',
+  };
   return apiRequest<MarketplaceListing>('/api/listings', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 }
 

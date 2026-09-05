@@ -24,6 +24,7 @@ import {
 import { colors } from '../../theme/colors';
 import { ScreenName, AnimalRecord } from '../../types';
 import * as api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 interface MyLivestockScreenProps {
   onNavigate: (screen: ScreenName) => void;
@@ -34,6 +35,7 @@ export const MyLivestockScreen: React.FC<MyLivestockScreenProps> = ({
   onNavigate,
   onSelectAnimal,
 }) => {
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [animals, setAnimals] = useState<AnimalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterSpecies, setFilterSpecies] = useState<'All' | 'Cattle' | 'Buffalo'>('All');
@@ -57,8 +59,10 @@ export const MyLivestockScreen: React.FC<MyLivestockScreenProps> = ({
   const isDesktop = windowWidth >= 768;
 
   useEffect(() => {
-    fetchAnimals();
-  }, []);
+    if (!isAuthLoading) {
+      fetchAnimals();
+    }
+  }, [isAuthLoading]);
 
   const fetchAnimals = async () => {
     setLoading(true);
@@ -74,15 +78,27 @@ export const MyLivestockScreen: React.FC<MyLivestockScreenProps> = ({
 
   const handleListForSale = async () => {
     if (!sellingAnimal) return;
+
+    if (!isAuthenticated && !user) {
+      alert('Your session has expired or is no longer valid. Please log in again.');
+      return;
+    }
+
     setListingSubmitting(true);
     try {
+      const parsedPrice = parseFloat(askingPrice);
+      const validPrice = !isNaN(parsedPrice) && parsedPrice > 0 ? parsedPrice : 50000;
+
       await api.createListing({
         animal_id: sellingAnimal.id,
-        asking_price: parseFloat(askingPrice) || 50000,
+        price: validPrice,
+        asking_price: validPrice,
         title: `${sellingAnimal.breed} - Verified Indigenous ${sellingAnimal.species}`,
         description: `Healthy ${sellingAnimal.species} with daily milk yield of ${sellingAnimal.daily_milk_yield_litres || 12}L. Verified breed with Bharat Pashudhan standard tag.`,
-        location_district: 'Anand',
-        location_state: 'Gujarat',
+        district: user?.district || 'Anand',
+        location_district: user?.district || 'Anand',
+        location_state: user?.state || 'Gujarat',
+        contact_phone: user?.phone || '+91 98765 43210',
       });
       alert(`Success! Your ${sellingAnimal.breed} is now listed on the marketplace.`);
       setSellingAnimal(null);

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import * as authService from '../services/api/auth';
+import { setAuthToken } from '../services/api/client';
 import { getItem, setItem, removeItem } from '../components/adapters/storage';
 
 interface AuthContextType {
@@ -23,35 +24,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Initial load from storage
+    // Initial synchronous/awaited session load from storage with verification
     const loadSession = async () => {
       try {
         const savedToken = await getItem('vetra_auth_token');
         const savedUserStr = await getItem('vetra_user');
+
         if (savedToken && savedUserStr) {
+          setAuthToken(savedToken);
           setToken(savedToken);
-          setUser(JSON.parse(savedUserStr));
-          // Verify with /me in background to ensure valid session
-          authService.getMe().then((me) => {
+          try {
+            setUser(JSON.parse(savedUserStr));
+          } catch {}
+
+          // Verify with /api/auth/me to confirm token is still cryptographically valid
+          try {
+            const me = await authService.getMe();
             if (me && me.id) {
               setUser(me);
             }
-          }).catch(async () => {
-            // If token is invalid or expired, re-authenticate cleanly
+          } catch (meErr) {
+            console.warn('Saved session token expired or invalid, auto-recovering demo farmer session:', meErr);
+            // Recover demo farmer session cleanly
             try {
               const data = await authService.login('farmer@vetra.in', 'farmer123');
+              setAuthToken(data.access_token);
               setToken(data.access_token);
               setUser(data.user);
-            } catch {}
-          });
+            } catch (reLoginErr) {
+              console.warn('Auto re-login failed:', reLoginErr);
+            }
+          }
         } else {
           // Auto-login as Ramesh (Farmer) by default for demo seamlessness
           try {
             const data = await authService.login('farmer@vetra.in', 'farmer123');
+            setAuthToken(data.access_token);
             setToken(data.access_token);
             setUser(data.user);
-          } catch {
-            // ignore if offline
+          } catch (loginErr) {
+            console.warn('Initial demo farmer auto-login failed:', loginErr);
           }
         }
       } catch (err) {
@@ -60,6 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(false);
       }
     };
+
     loadSession();
   }, []);
 
@@ -67,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const data = await authService.login(email, pass);
+      setAuthToken(data.access_token);
       setToken(data.access_token);
       setUser(data.user);
     } finally {
@@ -78,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const data = await authService.register(payload);
+      setAuthToken(data.access_token);
       setToken(data.access_token);
       setUser(data.user);
     } finally {
@@ -89,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       await authService.logout();
+      setAuthToken(null);
       setToken(null);
       setUser(null);
     } finally {
@@ -109,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         pass = 'admin123';
       }
       const data = await authService.login(email, pass);
+      setAuthToken(data.access_token);
       setToken(data.access_token);
       setUser(data.user);
     } catch (err: any) {
@@ -125,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         token,
         role: user?.role || null,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user && !!token,
         isLoading,
         login,
         register,
