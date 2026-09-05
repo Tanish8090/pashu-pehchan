@@ -181,30 +181,6 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
 
         {/* ================= 3. CENTERPIECE: ANIMATED VECTOR COW & DASHBOARD ================= */}
         <View style={styles.dashboardHeroFrame}>
-          {/* Header Row of Mockup Window */}
-          <View style={styles.dashboardMockupHeader}>
-            <View style={styles.mockupHeaderLeft}>
-              <View style={styles.mockupLogoDot} />
-              <View>
-                <Text style={styles.mockupGreeting}>Hi, Ramesh!</Text>
-                <Text style={styles.mockupGreetingSub}>Your herd is healthy and AI verification is synced</Text>
-              </View>
-            </View>
-
-            <View style={styles.mockupSearchWrap}>
-              <Text style={styles.mockupSearchPlaceholder}>🔍 Search herd ear tag or breed...</Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.mockupUpgradePill}
-              onPress={() => handleSelectRoleAndEnter('FARMER')}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.mockupUpgradeText}>Open App</Text>
-              <ArrowRight size={14} color="#ffffff" />
-            </TouchableOpacity>
-          </View>
-
           {/* Pastoral Landscape View with Animated Vector Cow */}
           <View style={styles.pastoralCanvas}>
             {/* Pastoral Nature Background SVG with Rolling Hills & Sky */}
@@ -867,7 +843,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
                     <Text style={{ fontSize: 20 }}>👨‍🌾</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.roleCardTitle}>Dairy Farmer (Ramesh Patel)</Text>
+                    <Text style={styles.roleCardTitle}>Dairy Farmer</Text>
                     <Text style={styles.roleCardSub}>Cattle herd management, AI breed scanning & direct selling</Text>
                   </View>
                   <ArrowRight size={16} color={colors.primary} />
@@ -882,7 +858,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
                     <Text style={{ fontSize: 20 }}>🤝</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.roleCardTitle}>Livestock Trader (Kishore Bhai)</Text>
+                    <Text style={styles.roleCardTitle}>Livestock Trader / Middleman</Text>
                     <Text style={styles.roleCardSub}>Wholesale procurement, side-by-side comparison & trade offers</Text>
                   </View>
                   <ArrowRight size={16} color="#D97706" />
@@ -897,7 +873,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
                     <Text style={{ fontSize: 20 }}>🏛️</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text style={styles.roleCardTitle}>DAHD Supervisor (Govt Admin)</Text>
+                    <Text style={styles.roleCardTitle}>Government / DAHD Supervisor</Text>
                     <Text style={styles.roleCardSub}>Model performance telemetry, audit trail & national standards</Text>
                   </View>
                   <ArrowRight size={16} color="#0284C7" />
@@ -1141,65 +1117,6 @@ const styles = StyleSheet.create({
     borderColor: '#E2EFE7',
     overflow: 'hidden',
     boxShadow: '0 20px 50px rgba(15, 61, 36, 0.08)',
-  },
-  dashboardMockupHeader: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EDF2EE',
-    gap: 14,
-  },
-  mockupHeaderLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  mockupLogoDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: '#16A34A',
-  },
-  mockupGreeting: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#0F3D24',
-  },
-  mockupGreetingSub: {
-    fontSize: 11,
-    color: '#64748B',
-  },
-  mockupSearchWrap: {
-    flex: 1,
-    maxWidth: 320,
-    backgroundColor: '#F8FAF9',
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#E2EFE7',
-  },
-  mockupSearchPlaceholder: {
-    fontSize: 12,
-    color: '#94A3B8',
-  },
-  mockupUpgradePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#0F172A',
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 20,
-  },
-  mockupUpgradeText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#FFFFFF',
   },
   pastoralCanvas: {
     height: 460,
