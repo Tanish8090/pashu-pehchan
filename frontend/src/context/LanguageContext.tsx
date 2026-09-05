@@ -66,7 +66,7 @@ const DICTIONARY: Record<LanguageCode, Translations> = {
     startFreeTrial: 'Start Free Trial',
     howItWorks: 'How it Works',
     ratedBy: 'Rated 4.9 ★ by 10,000+ Indian farmers',
-    heroHeadline1: 'From Planting to Harvest - One Farming Dashboard',
+    heroHeadline1: 'Pashu Ko Pehchano, Behtar Sambhalo',
     heroHeadline2: 'From Breed to Bharat Pashudhan - One Livestock Dashboard',
     heroSubtitle: 'Get a clear and comprehensive overview of your livestock operation. Make smarter decisions with PashuPehchan, the interactive AI dashboard for farmers, traders & supervisors.',
     weatherLocation: 'Anand, Gujarat',

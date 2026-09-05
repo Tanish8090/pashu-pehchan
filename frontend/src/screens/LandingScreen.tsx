@@ -154,8 +154,8 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
 
         {/* Hero Title */}
         <Text style={styles.heroTitle}>
-          {t('heroHeadline1').includes(' - ') ? t('heroHeadline1').split(' - ')[0] : t('heroHeadline1')} -{'\n'}
-          <Text style={styles.heroTitleItalic}>{t('heroHeadline1').includes(' - ') ? t('heroHeadline1').split(' - ')[1] : ''}</Text>
+          Pashu Ko Pehchano,{'\n'}
+          <Text style={styles.heroTitleItalic}>Behtar Sambhalo</Text>
         </Text>
 
         {/* Hero Subtitle */}
