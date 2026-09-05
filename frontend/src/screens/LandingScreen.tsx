@@ -49,8 +49,11 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
   const [pricingCycle, setPricingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   const handleOpenAuth = (mode: 'login' | 'signup') => {
-    setAuthMode(mode);
-    setShowAuthModal(true);
+    if (mode === 'login') {
+      onNavigate('login');
+    } else {
+      onNavigate('register');
+    }
   };
 
   const handleSelectRoleAndEnter = async (role: UserRole) => {

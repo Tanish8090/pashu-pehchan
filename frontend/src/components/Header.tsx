@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeDevice = 'CPU',
   unreadNotificationsCount = 0,
 }) => {
-  const { user, role, switchDemoRole } = useAuth();
+  const { user, role, switchDemoRole, logout } = useAuth();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
 
@@ -128,6 +128,21 @@ export const Header: React.FC<HeaderProps> = ({
                       🛡️ Admin (Supervisor)
                     </Text>
                     {role === 'ADMIN' && <Check size={12} color={colors.primary} />}
+                  </View>
+                </TouchableOpacity>
+                <View style={{ height: 1, backgroundColor: '#E2EFE7', marginVertical: 4 }} />
+                <TouchableOpacity
+                  style={styles.roleMenuItem}
+                  onPress={async () => {
+                    setShowRoleMenu(false);
+                    await logout();
+                    onNavigate('login');
+                  }}
+                >
+                  <View style={styles.roleMenuItemRow}>
+                    <Text style={[styles.roleMenuText, { color: colors.danger, fontWeight: '700' }]}>
+                      🚪 Sign Out
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
