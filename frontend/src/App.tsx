@@ -15,6 +15,7 @@ import { DesktopTopBar } from './components/DesktopTopBar';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Screens
+import { LandingScreen } from './screens/LandingScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { ScanScreen } from './screens/ScanScreen';
 import { ResultScreen } from './screens/ResultScreen';
@@ -71,7 +72,7 @@ const MainNavigator: React.FC = () => {
   // Desktop-First threshold: wide screen layouts on desktop/laptops (width >= 768px)
   const isDesktop = width >= 768;
 
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>('home');
+  const [currentScreen, setCurrentScreen] = useState<ScreenName>('landing');
   const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [activeDevice, setActiveDevice] = useState('CPU');
 
@@ -334,10 +335,26 @@ const MainNavigator: React.FC = () => {
             }
           />
         );
+      case 'landing':
+        return <LandingScreen onNavigate={(s) => setCurrentScreen(s)} />;
       default:
         return <FarmerHomeScreen onNavigate={(s) => setCurrentScreen(s)} />;
     }
   };
+
+  if (currentScreen === 'landing') {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor="#F3F8F5" />
+        <LandingScreen onNavigate={(s) => setCurrentScreen(s)} />
+        {toastMessage && (
+          <View style={styles.toastContainer}>
+            <Text style={styles.toastText}>{toastMessage}</Text>
+          </View>
+        )}
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -486,7 +503,7 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     flex: 1,
     backgroundColor: colors.background,
-    boxShadow: '0 4px 20px rgba(45, 139, 117, 0.15)',
+    boxShadow: '0 8px 32px rgba(20, 83, 45, 0.12)',
     overflow: 'hidden',
     position: 'relative',
     ...(Platform.OS === 'web'
@@ -503,16 +520,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* Toast Notification — Warm pill-shaped */
+  /* Toast Notification — Fresh agricultural pill */
   toastContainer: {
     position: 'absolute',
     bottom: 28,
     right: 28,
     backgroundColor: colors.primaryDark,
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: 22,
-    borderRadius: 14,
-    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)',
+    borderRadius: 24,
+    boxShadow: '0 8px 24px rgba(15, 61, 36, 0.22)',
     zIndex: 999,
   },
   toastText: {

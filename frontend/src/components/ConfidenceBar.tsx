@@ -81,28 +81,28 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tierBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 12,
   },
   tierText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: 0.4,
   },
   percentText: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.textPrimary,
     fontVariant: ['tabular-nums'],
   },
   track: {
     width: '100%',
-    backgroundColor: colors.borderLight,
-    borderRadius: 999,
+    backgroundColor: '#E8F2EC',
+    borderRadius: 6,
     overflow: 'hidden',
   },
   fill: {
-    borderRadius: 999,
+    borderRadius: 6,
   },
 });

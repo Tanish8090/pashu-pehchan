@@ -233,6 +233,7 @@ export interface DashboardResponse {
 }
 
 export type ScreenName =
+  | 'landing'
   | 'home'
   | 'scan'
   | 'results'

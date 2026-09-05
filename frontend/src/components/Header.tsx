@@ -174,8 +174,9 @@ export const Header: React.FC<HeaderProps> = ({
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.surface,
-    borderBottomWidth: 0,
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    boxShadow: '0 2px 8px rgba(20, 83, 45, 0.04)',
     paddingHorizontal: 16,
     paddingVertical: 12,
     zIndex: 100,
@@ -212,9 +213,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 14,
+    borderRadius: 20,
   },
   roleText: {
     fontSize: 11,
@@ -223,15 +224,15 @@ const styles = StyleSheet.create({
   },
   roleMenu: {
     position: 'absolute',
-    top: 34,
+    top: 36,
     right: 0,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: 4,
+    borderRadius: 16,
+    padding: 6,
     width: 180,
-    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.12)',
+    boxShadow: '0 8px 24px rgba(20, 83, 45, 0.12)',
     zIndex: 102,
   },
   roleMenuItem: {

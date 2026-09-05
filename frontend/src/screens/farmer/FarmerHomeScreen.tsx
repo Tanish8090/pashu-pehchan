@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   MapPin,
   ExternalLink,
+  Sparkles,
 } from 'lucide-react';
 import { colors } from '../../theme/colors';
 import { ScreenName, FarmerDashboardData } from '../../types';
@@ -74,35 +75,81 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
       contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
       showsVerticalScrollIndicator={false}
     >
-      {/* Welcome Banner */}
-      <View style={[styles.welcomeCard, isDesktop && styles.desktopWelcomeCard]}>
-        <View style={styles.welcomeTextCol}>
-          <View style={styles.welcomeTitleRow}>
-            <Text style={styles.greetingText}>Namaste, {user?.name || 'Farmer'} 🙏</Text>
-            <View style={styles.districtBadge}>
-              <MapPin size={12} color={colors.primary} />
-              <Text style={styles.districtBadgeText}>
-                {user?.district || 'Anand'}, {user?.state || 'Gujarat'} • Pashu Palak
+      {/* Farm Mora Welcoming Hero Section */}
+      <View style={[styles.heroCard, isDesktop && styles.desktopHeroCard]}>
+        <View style={styles.heroMainCol}>
+          {/* Top Tag Pill */}
+          <View style={styles.heroTagPill}>
+            <View style={styles.heroTagDot} />
+            <Text style={styles.heroTagText}>AI-Assisted Livestock Intelligence • 41 Indigenous Breeds</Text>
+          </View>
+
+          {/* Large Welcoming Headline */}
+          <Text style={[styles.heroHeadline, isDesktop && styles.desktopHeroHeadline]}>
+            Smart livestock management, powered by AI.
+          </Text>
+
+          {/* Calming Subtitle */}
+          <Text style={styles.heroSubtitle}>
+            Identify, verify and manage your cattle and buffalo with one connected platform.
+          </Text>
+
+          {/* Action Pills Row */}
+          <View style={styles.heroActionsRow}>
+            <TouchableOpacity
+              style={styles.heroPrimaryPill}
+              onPress={() => onNavigate('scan')}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.heroPrimaryPillText}>AI Breed Scan ↗</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.heroSecondaryPill}
+              onPress={() => onNavigate('my_livestock')}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.heroSecondaryPillText}>My Herd ({dashboard?.total_animals ?? 4})</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.heroTertiaryPill}
+              onPress={() => onNavigate('vets')}
+              activeOpacity={0.85}
+            >
+              <Stethoscope size={14} color={colors.primaryDark} />
+              <Text style={styles.heroTertiaryPillText}>Find a Vet</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Right Info Emblem & Farmer Location Badge */}
+        <View style={[styles.heroRightBadge, isDesktop && styles.desktopHeroRightBadge]}>
+          <View style={styles.farmerPill}>
+            <Text style={styles.farmerGreeting}>Namaste, {user?.name || 'Farmer'} 🙏</Text>
+            <View style={styles.farmerDistrictPill}>
+              <MapPin size={11} color={colors.primary} />
+              <Text style={styles.farmerDistrictText}>
+                {user?.district || 'Anand'}, {user?.state || 'Gujarat'}
               </Text>
             </View>
           </View>
-          <Text style={styles.welcomeSub}>
-            Bharat Pashudhan AI-Assisted Breed Verification, Milk Yield Analytics & Registered Herd
-          </Text>
-        </View>
 
-        <View style={styles.govEmblemBox}>
-          <Image
-            source={{ uri: '/logo.png' }}
-            style={styles.welcomeLogo}
-            resizeMode="contain"
-          />
-          <Text style={styles.govEmblemText}>PashuPehchan</Text>
-          <Text style={styles.govSubText}>ICAR-NBAGR</Text>
+          <View style={styles.icarTrustBox}>
+            <Image
+              source={{ uri: '/logo.png' }}
+              style={styles.icarLogo}
+              resizeMode="contain"
+            />
+            <View>
+              <Text style={styles.icarTitle}>PashuPehchan</Text>
+              <Text style={styles.icarSubtitle}>ICAR-NBAGR Recognized</Text>
+            </View>
+          </View>
         </View>
       </View>
 
-      {/* Top 4 KPI Metrics Row */}
+      {/* Top 4 KPI Metrics Row — 24px Radius Calm Cards */}
       <View style={[styles.statsRow, isDesktop && styles.desktopStatsRow]}>
         <TouchableOpacity
           style={styles.statCard}
@@ -112,7 +159,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
           <View style={styles.statCardHeader}>
             <Text style={styles.statVal}>{dashboard?.total_animals ?? 4}</Text>
             <View style={[styles.statIconBox, { backgroundColor: colors.primarySoft }]}>
-              <Layers size={16} color={colors.primary} />
+              <Layers size={18} color={colors.primary} />
             </View>
           </View>
           <Text style={styles.statLbl}>Registered Herd</Text>
@@ -123,7 +170,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
           <View style={styles.statCardHeader}>
             <Text style={[styles.statVal, { color: colors.success }]}>4 / 4</Text>
             <View style={[styles.statIconBox, { backgroundColor: colors.successBg }]}>
-              <ShieldCheck size={16} color={colors.success} />
+              <ShieldCheck size={18} color={colors.success} />
             </View>
           </View>
           <Text style={styles.statLbl}>Verified Indigenous</Text>
@@ -140,7 +187,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               {dashboard?.for_sale_count ?? 1}
             </Text>
             <View style={[styles.statIconBox, { backgroundColor: colors.accentSoft }]}>
-              <ShoppingBag size={16} color={colors.warning} />
+              <ShoppingBag size={18} color={colors.warning} />
             </View>
           </View>
           <Text style={styles.statLbl}>Listed for Sale</Text>
@@ -157,7 +204,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               {dashboard?.pending_enquiries ?? 2}
             </Text>
             <View style={[styles.statIconBox, { backgroundColor: colors.infoBg }]}>
-              <PhoneCall size={16} color={colors.info} />
+              <PhoneCall size={18} color={colors.info} />
             </View>
           </View>
           <Text style={styles.statLbl}>Buyer Enquiries</Text>
@@ -167,31 +214,31 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
 
       {/* Main Multi-Column Content Area on Desktop */}
       <View style={[styles.mainLayout, isDesktop && styles.desktopMainLayout]}>
-        {/* Left / Primary Column (Hero + Herd Highlights + Services) */}
+        {/* Left / Primary Column (Hero Feature + Services + Herd Highlights) */}
         <View style={[styles.primaryCol, isDesktop && styles.desktopPrimaryCol]}>
-          {/* Primary Hero Action: AI Breed Scan */}
+          {/* Flagship Feature: AI Breed Scan Card */}
           <TouchableOpacity
-            style={styles.heroScanCard}
+            style={styles.flagshipScanCard}
             onPress={() => onNavigate('scan')}
             activeOpacity={0.9}
           >
-            <View style={styles.heroLeft}>
+            <View style={styles.flagshipLeft}>
               <View style={styles.cameraIconCircle}>
-                <Camera size={28} color="#ffffff" />
+                <Camera size={26} color="#ffffff" />
               </View>
-              <View style={styles.heroTextCol}>
-                <View style={styles.heroPill}>
-                  <Award size={12} color={colors.primary} />
-                  <Text style={styles.heroPillText}>AI Breed Identification</Text>
+              <View style={styles.flagshipTextCol}>
+                <View style={styles.flagshipPill}>
+                  <Sparkles size={12} color={colors.primaryDark} />
+                  <Text style={styles.flagshipPillText}>Neural Breed Recognition</Text>
                 </View>
-                <Text style={styles.heroTitle}>Scan New Cattle / Buffalo</Text>
-                <Text style={styles.heroDesc}>
+                <Text style={styles.flagshipTitle}>Scan New Cattle / Buffalo</Text>
+                <Text style={styles.flagshipDesc}>
                   Instant photo classification across 41 indigenous breeds with top-3 confidence
-                  scores, physical breed standards & ear-tag registry attachment.
+                  scores, physical breed traits & ear-tag registry attachment.
                 </Text>
               </View>
             </View>
-            <View style={styles.heroArrowBtn}>
+            <View style={styles.flagshipArrowBtn}>
               <ArrowRight size={20} color="#ffffff" />
             </View>
           </TouchableOpacity>
@@ -255,7 +302,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>My Herd Highlights</Text>
             <TouchableOpacity onPress={() => onNavigate('my_livestock')}>
-              <Text style={styles.seeAllText}>View All ({dashboard?.total_animals ?? 4})</Text>
+              <Text style={styles.seeAllText}>View All ({dashboard?.total_animals ?? 4}) →</Text>
             </TouchableOpacity>
           </View>
 
@@ -289,7 +336,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
                       <ShieldCheck size={12} color={colors.success} />
                       <Text style={styles.verifiedText}>Verified</Text>
                     </View>
-                    <ChevronRight size={16} color={colors.textSecondary} />
+                    <ChevronRight size={16} color={colors.textMuted} />
                   </View>
                 </TouchableOpacity>
               ))}
@@ -326,7 +373,9 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               onPress={() => onNavigate('scan')}
               activeOpacity={0.85}
             >
-              <Upload size={28} color={colors.primary} />
+              <View style={styles.dropzoneIconWrap}>
+                <Upload size={24} color={colors.primary} />
+              </View>
               <Text style={styles.widgetDropzoneTitle}>Upload or Take Photo</Text>
               <Text style={styles.widgetDropzoneSub}>Click to launch AI camera scanner</Text>
             </TouchableOpacity>
@@ -431,86 +480,178 @@ const styles = StyleSheet.create({
   },
   desktopContent: {
     padding: 0,
-    paddingBottom: 36,
+    paddingBottom: 40,
     gap: 24,
   },
-  welcomeCard: {
+
+  /* Farm Mora Hero Banner */
+  heroCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#E2EFE7',
+    padding: 22,
+    boxShadow: '0 4px 20px rgba(15, 61, 36, 0.05)',
+    gap: 18,
+  },
+  desktopHeroCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.surface,
-    padding: 18,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.card || '0 2px 10px rgba(45, 139, 117, 0.08)',
+    padding: 28,
+    borderRadius: 28,
+    gap: 24,
   },
-  desktopWelcomeCard: {
-    padding: 22,
-    borderRadius: 18,
-  },
-  welcomeTextCol: {
+  heroMainCol: {
     flex: 1,
-    gap: 6,
-  },
-  welcomeTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 12,
-    flexWrap: 'wrap',
   },
-  greetingText: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: colors.textPrimary,
-  },
-  districtBadge: {
+  heroTagPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    backgroundColor: colors.primarySoft,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
+    gap: 8,
+    backgroundColor: '#EDF9F1',
     borderWidth: 1,
-    borderColor: colors.primaryBorder,
+    borderColor: '#D1EBD8',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
   },
-  districtBadgeText: {
+  heroTagDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: '#16A34A',
+  },
+  heroTagText: {
     fontSize: 11,
     fontWeight: '700',
-    color: colors.primaryDark,
+    color: '#0F3D24',
+    letterSpacing: 0.2,
   },
-  welcomeSub: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 2,
-    lineHeight: 18,
-  },
-  govEmblemBox: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primarySoft,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.primaryBorder,
-  },
-  welcomeLogo: {
-    width: 44,
-    height: 44,
-    marginBottom: 4,
-  },
-  govEmblemText: {
-    fontSize: 11,
+  heroHeadline: {
+    fontSize: 22,
     fontWeight: '800',
-    color: colors.primaryDark,
+    color: '#0F3D24',
+    lineHeight: 28,
+    letterSpacing: -0.5,
   },
-  govSubText: {
-    fontSize: 9,
-    color: colors.textSecondary,
+  desktopHeroHeadline: {
+    fontSize: 28,
+    lineHeight: 34,
+  },
+  heroSubtitle: {
+    fontSize: 13,
+    color: '#365345',
+    lineHeight: 19,
+    maxWidth: 560,
+  },
+  heroActionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 4,
+    flexWrap: 'wrap',
+  },
+  heroPrimaryPill: {
+    backgroundColor: '#16A34A',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 22,
+    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.25)',
+  },
+  heroPrimaryPillText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  heroSecondaryPill: {
+    backgroundColor: '#F7FCF9',
+    borderWidth: 1,
+    borderColor: '#D1EBD8',
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 22,
+  },
+  heroSecondaryPillText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0F3D24',
+  },
+  heroTertiaryPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#EDF9F1',
+    borderWidth: 1,
+    borderColor: '#D1EBD8',
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 22,
+  },
+  heroTertiaryPillText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0F3D24',
+  },
+  heroRightBadge: {
+    gap: 12,
+  },
+  desktopHeroRightBadge: {
+    alignItems: 'flex-end',
+  },
+  farmerPill: {
+    backgroundColor: '#F7FCF9',
+    borderWidth: 1,
+    borderColor: '#E2EFE7',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 18,
+    gap: 4,
+  },
+  farmerGreeting: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0F3D24',
+  },
+  farmerDistrictPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  farmerDistrictText: {
+    fontSize: 11,
     fontWeight: '600',
+    color: '#365345',
   },
+  icarTrustBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2EFE7',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 18,
+  },
+  icarLogo: {
+    width: 32,
+    height: 32,
+  },
+  icarTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0F3D24',
+  },
+  icarSubtitle: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#365345',
+  },
+
+  /* Stats Row */
   statsRow: {
     flexDirection: 'row',
     gap: 14,
@@ -522,13 +663,13 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: 160,
-    backgroundColor: colors.surface,
-    padding: 18,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 24,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
-    gap: 4,
+    borderColor: '#E2EFE7',
+    boxShadow: '0 4px 16px rgba(15, 61, 36, 0.04)',
+    gap: 6,
   },
   statCardHeader: {
     flexDirection: 'row',
@@ -536,26 +677,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statVal: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
-    color: colors.primary,
+    color: '#0F3D24',
+    letterSpacing: -0.5,
   },
   statIconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   statLbl: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: '#142820',
   },
   statDetail: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: '#365345',
   },
+
+  /* Main Layout */
   mainLayout: {
     flexDirection: 'column',
     gap: 20,
@@ -579,72 +723,80 @@ const styles = StyleSheet.create({
   desktopSecondaryCol: {
     flex: 35,
   },
-  heroScanCard: {
+
+  /* Flagship Scan Banner */
+  flagshipScanCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.primaryDark,
-    borderRadius: 18,
-    padding: 22,
-    boxShadow: '0 6px 14px rgba(30, 92, 78, 0.25)',
+    backgroundColor: '#0F3D24',
+    borderRadius: 24,
+    padding: 24,
+    boxShadow: '0 8px 24px rgba(15, 61, 36, 0.20)',
   },
-  heroLeft: {
+  flagshipLeft: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
   },
   cameraIconCircle: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: colors.primary,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: '#16A34A',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
   },
-  heroTextCol: {
+  flagshipTextCol: {
     flex: 1,
     gap: 6,
   },
-  heroPill: {
+  flagshipPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    backgroundColor: '#EDF9F1',
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 20,
     alignSelf: 'flex-start',
   },
-  heroPillText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.primaryDark,
-  },
-  heroTitle: {
-    fontSize: 19,
+  flagshipPillText: {
+    fontSize: 10,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#0F3D24',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  heroDesc: {
+  flagshipTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: -0.3,
+  },
+  flagshipDesc: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: '#C6E2D0',
     lineHeight: 17,
   },
-  heroArrowBtn: {
+  flagshipArrowBtn: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 14,
   },
+
+  /* Section Header */
   sectionHeading: {
     fontSize: 16,
     fontWeight: '800',
-    color: colors.textPrimary,
+    color: '#0F3D24',
+    letterSpacing: -0.2,
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -654,8 +806,10 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.primary,
+    color: '#16A34A',
   },
+
+  /* Services Grid */
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -666,12 +820,12 @@ const styles = StyleSheet.create({
   },
   actionTile: {
     width: '48%',
-    backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    padding: 18,
+    borderRadius: 22,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
+    borderColor: '#E2EFE7',
+    boxShadow: '0 2px 10px rgba(15, 61, 36, 0.04)',
     gap: 6,
   },
   desktopActionTile: {
@@ -681,7 +835,7 @@ const styles = StyleSheet.create({
   tileIcon: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
@@ -689,13 +843,15 @@ const styles = StyleSheet.create({
   tileTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: '#142820',
   },
   tileSub: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: '#365345',
     lineHeight: 15,
   },
+
+  /* Animal List */
   animalList: {
     gap: 12,
   },
@@ -707,12 +863,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
+    borderColor: '#E2EFE7',
+    boxShadow: '0 2px 10px rgba(15, 61, 36, 0.04)',
     width: '100%',
   },
   desktopAnimalCard: {
@@ -726,8 +882,8 @@ const styles = StyleSheet.create({
   animalThumb: {
     width: 48,
     height: 48,
-    borderRadius: 12,
-    backgroundColor: colors.surfaceSubtle,
+    borderRadius: 24,
+    backgroundColor: '#EDF9F1',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -737,17 +893,17 @@ const styles = StyleSheet.create({
   animalBreed: {
     fontSize: 14,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: '#0F3D24',
   },
   animalTag: {
     fontSize: 11,
-    color: colors.textSecondary,
+    color: '#365345',
     marginTop: 2,
   },
   animalYield: {
     fontSize: 11,
     fontWeight: '600',
-    color: colors.primary,
+    color: '#16A34A',
     marginTop: 2,
   },
   animalCardRight: {
@@ -759,45 +915,46 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: colors.successBg,
+    backgroundColor: '#EDF9F1',
+    borderWidth: 1,
+    borderColor: '#D1EBD8',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   verifiedText: {
     fontSize: 10,
     fontWeight: '700',
-    color: colors.success,
+    color: '#16A34A',
   },
   emptyCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: '#FFFFFF',
     padding: 28,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
+    borderColor: '#E2EFE7',
     alignItems: 'center',
   },
   emptyTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: '#0F3D24',
   },
   emptySub: {
     fontSize: 12,
-    color: colors.textMuted,
+    color: '#365345',
     marginTop: 4,
     textAlign: 'center',
   },
 
   /* Secondary Column Widgets */
   quickScanWidget: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 22,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
+    borderColor: '#E2EFE7',
+    boxShadow: '0 4px 16px rgba(15, 61, 36, 0.04)',
     gap: 12,
   },
   widgetHeader: {
@@ -813,45 +970,54 @@ const styles = StyleSheet.create({
   widgetTitle: {
     fontSize: 14,
     fontWeight: '800',
-    color: colors.textPrimary,
+    color: '#0F3D24',
   },
   widgetBadge: {
-    backgroundColor: colors.primarySoft,
+    backgroundColor: '#EDF9F1',
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 6,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.primaryBorder,
+    borderColor: '#D1EBD8',
   },
   widgetBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: colors.primaryDark,
+    color: '#0F3D24',
   },
   widgetSub: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: '#365345',
     lineHeight: 16,
   },
   widgetDropzone: {
-    backgroundColor: colors.primarySoft,
+    backgroundColor: '#F7FCF9',
     borderWidth: 2,
-    borderColor: colors.primaryBorder,
+    borderColor: '#A7D7BC',
     borderStyle: 'dashed' as any,
-    borderRadius: 14,
+    borderRadius: 20,
     padding: 22,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
   },
+  dropzoneIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#EDF9F1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+  },
   widgetDropzoneTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.primaryDark,
+    color: '#0F3D24',
   },
   widgetDropzoneSub: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: '#365345',
   },
   sampleRow: {
     gap: 8,
@@ -859,7 +1025,7 @@ const styles = StyleSheet.create({
   sampleLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: colors.textSecondary,
+    color: '#365345',
   },
   sampleChips: {
     flexDirection: 'row',
@@ -867,27 +1033,27 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sampleChip: {
-    backgroundColor: colors.surfaceSubtle,
+    backgroundColor: '#F7FCF9',
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
+    borderColor: '#E2EFE7',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   sampleChipText: {
     fontSize: 11,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: '#0F3D24',
   },
 
   /* Veterinary Widget */
   vetWidget: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 22,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
+    borderColor: '#E2EFE7',
+    boxShadow: '0 4px 16px rgba(15, 61, 36, 0.04)',
     gap: 8,
   },
   vetWidgetHeader: {
@@ -903,33 +1069,35 @@ const styles = StyleSheet.create({
   vetWidgetTitle: {
     fontSize: 14,
     fontWeight: '800',
-    color: colors.textPrimary,
+    color: '#0F3D24',
   },
   emergencyPill: {
-    backgroundColor: colors.dangerBg,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 6,
+    borderRadius: 12,
   },
   emergencyPillText: {
     fontSize: 10,
     fontWeight: '800',
-    color: colors.danger,
+    color: '#DC2626',
   },
   vetClinicName: {
     fontSize: 13,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: '#142820',
   },
   vetClinicAddress: {
     fontSize: 11,
-    color: colors.textSecondary,
+    color: '#365345',
     lineHeight: 15,
   },
   vetDistance: {
     fontSize: 11,
     fontWeight: '600',
-    color: colors.primary,
+    color: '#16A34A',
   },
   vetActionsRow: {
     flexDirection: 'row',
@@ -942,16 +1110,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: colors.primarySoft,
+    backgroundColor: '#F7FCF9',
     borderWidth: 1,
-    borderColor: colors.primaryBorder,
+    borderColor: '#D1EBD8',
     paddingVertical: 9,
-    borderRadius: 10,
+    borderRadius: 14,
   },
   vetCallText: {
     fontSize: 11,
     fontWeight: '700',
-    color: colors.primaryDark,
+    color: '#0F3D24',
   },
   vetDirectionsBtn: {
     flex: 1,
@@ -959,14 +1127,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: colors.info,
+    backgroundColor: '#0284C7',
     paddingVertical: 9,
-    borderRadius: 10,
+    borderRadius: 14,
   },
   vetDirectionsText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
 
   /* Emergency 1962 Card */
@@ -976,8 +1144,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#991B1B',
     padding: 16,
-    borderRadius: 16,
-    boxShadow: '0 4px 8px rgba(153, 27, 27, 0.3)',
+    borderRadius: 20,
+    boxShadow: '0 4px 14px rgba(153, 27, 27, 0.25)',
   },
   emergencyLeft: {
     flexDirection: 'row',
@@ -988,7 +1156,7 @@ const styles = StyleSheet.create({
   emergencyIconBox: {
     width: 38,
     height: 38,
-    borderRadius: 10,
+    borderRadius: 19,
     backgroundColor: '#DC2626',
     alignItems: 'center',
     justifyContent: 'center',
@@ -996,7 +1164,7 @@ const styles = StyleSheet.create({
   emergencyTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
   emergencySub: {
     fontSize: 11,
@@ -1006,10 +1174,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 10,
+    borderRadius: 14,
   },
   callNowText: {
     fontSize: 11,
@@ -1017,3 +1185,4 @@ const styles = StyleSheet.create({
     color: '#991B1B',
   },
 });
+

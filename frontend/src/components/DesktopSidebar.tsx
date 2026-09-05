@@ -160,21 +160,27 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   return (
     <View style={styles.sidebarContainer}>
       {/* Brand Header with PashuPehchan Logo Image */}
-      <View style={styles.brandHeader}>
+      <View style={styles.sidebarHeader}>
         <TouchableOpacity
-          onPress={() => {
-            if (role === 'MIDDLEMAN') onNavigate('middleman_home');
-            else if (role === 'ADMIN') onNavigate('admin');
-            else onNavigate('home');
-          }}
+          onPress={() => onNavigate('landing')}
           activeOpacity={0.88}
-          style={styles.logoImageWrap}
+          style={styles.logoBadgeWrap}
+          accessibilityLabel="Go to Farm Mora Landing Page"
         >
           <Image
             source={{ uri: '/logo.png' }}
             style={styles.sidebarLogoImage}
             resizeMode="contain"
           />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.landingLinkPill}
+          onPress={() => onNavigate('landing')}
+          activeOpacity={0.8}
+        >
+          <Sparkles size={11} color={colors.primary} />
+          <Text style={styles.landingLinkText}>Farm Mōra Landing Page ↗</Text>
         </TouchableOpacity>
 
         <View style={styles.icarBadgeRow}>
@@ -375,35 +381,55 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 
 const styles = StyleSheet.create({
   sidebarContainer: {
-    width: 272,
-    backgroundColor: colors.sidebarBg,
-    borderRightWidth: 0,
-    boxShadow: '2px 0 12px rgba(0, 0, 0, 0.06)',
-    display: 'flex',
-    flexDirection: 'column',
+    width: 270,
     height: '100vh',
-    paddingVertical: 18,
-    paddingHorizontal: 16,
+    backgroundColor: colors.surface,
+    borderRightWidth: 1,
+    borderRightColor: colors.border,
+    paddingHorizontal: 18,
+    paddingTop: 20,
+    paddingBottom: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     zIndex: 100,
-    overflowY: 'auto' as any,
-    overflowX: 'hidden' as any,
+    boxShadow: '0 4px 20px rgba(20, 83, 45, 0.04)',
   },
-  brandHeader: {
+  sidebarHeader: {
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
     gap: 8,
-    alignItems: 'center',
   },
-  logoImageWrap: {
-    width: '100%',
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logoBadgeWrap: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 2,
   },
   sidebarLogoImage: {
-    width: 150,
-    height: 150,
+    width: 140,
+    height: 52,
+  },
+  landingLinkPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#EDF9F1',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#C2E7D1',
+  },
+  landingLinkText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#16A34A',
   },
   icarBadgeRow: {
     flexDirection: 'row',
@@ -411,8 +437,8 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: colors.primarySoft,
     paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
   },
@@ -422,12 +448,12 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
   },
   profileCard: {
-    marginTop: 14,
+    marginTop: 12,
     padding: 12,
     backgroundColor: colors.surfaceSubtle,
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
     gap: 8,
     position: 'relative',
     zIndex: 105,
@@ -455,7 +481,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.textPrimary,
   },
   userSub: {
@@ -469,9 +495,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingVertical: 7,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   switchRoleBtnContent: {
     flexDirection: 'row',
@@ -508,18 +534,18 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.border,
-    padding: 4,
-    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
+    padding: 6,
+    boxShadow: '0 8px 24px rgba(20, 83, 45, 0.12)',
     zIndex: 120,
     elevation: 10,
   },
   roleOption: {
     paddingVertical: 9,
-    paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
   },
   roleOptionActive: {
     backgroundColor: colors.sidebarActiveBg,
@@ -537,7 +563,7 @@ const styles = StyleSheet.create({
   },
   roleOptionTextActive: {
     color: colors.primaryDark,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   navScroll: {
     flex: 1,
@@ -545,39 +571,33 @@ const styles = StyleSheet.create({
   },
   navScrollContent: {
     paddingVertical: 6,
-    gap: 18,
+    gap: 16,
   },
   navSection: {
-    gap: 4,
+    gap: 3,
   },
   navSectionTitle: {
     fontSize: 10,
     fontWeight: '800',
     color: colors.textMuted,
-    letterSpacing: 0.6,
-    paddingHorizontal: 8,
+    letterSpacing: 0.8,
+    paddingHorizontal: 10,
     marginBottom: 6,
     textTransform: 'uppercase' as any,
   },
   navList: {
-    gap: 2,
+    gap: 3,
   },
   navItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    borderLeftWidth: 3,
-    borderLeftColor: 'transparent',
-    transition: 'all 0.18s ease',
+    paddingHorizontal: 14,
+    borderRadius: 14,
   },
   navItemActive: {
-    backgroundColor: colors.sidebarActiveBg,
-    borderLeftColor: colors.primary,
-    borderWidth: 0,
-    borderLeftWidth: 3,
+    backgroundColor: colors.primary,
   },
   navItemLeft: {
     flexDirection: 'row',
@@ -586,24 +606,24 @@ const styles = StyleSheet.create({
   },
   navItemLabel: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.sidebarText,
   },
   navItemLabelActive: {
-    fontWeight: '700',
-    color: colors.primaryDark,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   navItemBadge: {
     backgroundColor: colors.surfaceSubtle,
     paddingHorizontal: 7,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.borderLight,
   },
   navItemBadgeActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
   },
   navItemBadgeText: {
     fontSize: 9,
@@ -611,7 +631,8 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   navItemBadgeTextActive: {
-    color: '#FFFFFF',
+    color: colors.primaryDark,
+    fontWeight: '800',
   },
   modelStatusCard: {
     backgroundColor: colors.surfaceSubtle,

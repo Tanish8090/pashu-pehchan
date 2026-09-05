@@ -21,9 +21,11 @@
       }
       html, body {
         height: 100%;
-        background-color: #FAF8F5;
+        background-color: #F1F8F5;
+        background: radial-gradient(130% 100% at 50% 0%, #E8F3FA 0%, #F1F8F5 45%, #EDF7F2 100%);
+        background-attachment: fixed;
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: #2D3436;
+        color: #142820;
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -33,22 +35,22 @@
         display: flex;
         flex-direction: column;
         min-height: 100%;
-        background-color: #FAF8F5;
+        background-color: transparent;
       }
-      /* Custom scrollbars — warm neutral tones */
+      /* Custom scrollbars — soft sage & mint tones */
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #F0ECE7;
+        background: #E8F2EC;
       }
       ::-webkit-scrollbar-thumb {
-        background: #C8C1B8;
+        background: #A8CEBA;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #A89F96;
+        background: #81B69B;
       }
       /* Smooth transitions for interactive elements */
       button, a, [role="button"] {

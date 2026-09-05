@@ -72,12 +72,12 @@ export const GuidanceCard: React.FC = () => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 14,
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: colors.borderLight,
-    padding: 14,
+    borderColor: colors.border,
+    padding: 16,
     marginVertical: 8,
-    boxShadow: '0 2px 6px rgba(45, 139, 117, 0.08)',
+    boxShadow: '0 4px 16px rgba(20, 83, 45, 0.05)',
   },
   header: {
     flexDirection: 'row',
