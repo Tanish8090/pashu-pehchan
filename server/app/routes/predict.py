@@ -36,7 +36,9 @@ async def predict_breed(
     Returns top-3 predictions with confidence scores and verification recommendations.
     """
     # 1. Content type check
+    print(f"[PREDICT] Incoming request: filename='{image.filename}', content_type='{image.content_type}'")
     if image.content_type and image.content_type.lower() not in ALLOWED_CONTENT_TYPES:
+        print(f"[PREDICT ERROR 400] Unsupported content_type: {image.content_type}")
         raise HTTPException(
             status_code=400,
             detail=f"Unsupported file type: {image.content_type}. Please upload a JPEG, PNG, or WebP image."
@@ -45,13 +47,17 @@ async def predict_breed(
     # 2. Read image content
     try:
         contents = await image.read()
+        print(f"[PREDICT] Read {len(contents)} bytes, header snippet: {contents[:32]}")
     except Exception as e:
+        print(f"[PREDICT ERROR 400] Failed reading file: {e}")
         raise HTTPException(status_code=400, detail=f"Failed to read uploaded file: {str(e)}")
 
     if not contents or len(contents) == 0:
+        print("[PREDICT ERROR 400] Uploaded file is empty.")
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
     if len(contents) > MAX_IMAGE_SIZE_BYTES:
+        print(f"[PREDICT ERROR 400] File size {len(contents)} exceeds 15MB limit.")
         raise HTTPException(status_code=400, detail="Image exceeds maximum size limit of 15MB.")
 
     # 3. Open with PIL and validate integrity
@@ -61,6 +67,7 @@ async def predict_breed(
         # Re-open after verify (verify consumes the buffer)
         pil_image = Image.open(io.BytesIO(contents)).convert("RGB")
     except Exception as e:
+        print(f"[PREDICT ERROR 400] PIL verification failed: {e}")
         raise HTTPException(
             status_code=400,
             detail=f"Corrupted or invalid image file: {str(e)}"
@@ -96,23 +103,33 @@ async def predict_breed(
 @router.get("/sample/{breed_name}")
 def get_sample_image(breed_name: str):
     """
-    Returns a sample evaluation image for the requested breed from the test dataset.
+    Returns a sample evaluation image for the requested breed from available sample assets or test dataset.
     """
+    norm_breed = breed_name.strip().lower().replace(" ", "").replace("_", "")
+    # Check direct sample files first
+    sample_dirs = [Path("data/sample_images"), Path("frontend/public/samples")]
+    for s_dir in sample_dirs:
+        if s_dir.exists():
+            for f in s_dir.glob("*.*"):
+                stem = f.stem.lower().replace(" ", "").replace("_", "")
+                if stem == norm_breed or stem in norm_breed or norm_breed in stem:
+                    return FileResponse(str(f))
+
+    # Check test dataset directory
     test_dir = Path("data/test")
-    if not test_dir.exists():
-        raise HTTPException(status_code=404, detail="Test dataset directory not available.")
+    if test_dir.exists():
+        target_dir = test_dir / breed_name
+        if not target_dir.exists() or not target_dir.is_dir():
+            matches = [d for d in test_dir.iterdir() if d.is_dir() and d.name.lower().replace("_", "") == norm_breed]
+            if matches:
+                target_dir = matches[0]
+            else:
+                target_dir = None
 
-    target_dir = test_dir / breed_name
-    if not target_dir.exists() or not target_dir.is_dir():
-        matches = [d for d in test_dir.iterdir() if d.is_dir() and d.name.lower() == breed_name.lower()]
-        if matches:
-            target_dir = matches[0]
-        else:
-            raise HTTPException(status_code=404, detail=f"No sample images available for breed: {breed_name}")
+        if target_dir and target_dir.exists():
+            images = list(target_dir.glob("*.jpg")) + list(target_dir.glob("*.png")) + list(target_dir.glob("*.j*pg"))
+            if images:
+                return FileResponse(str(images[0]))
 
-    images = list(target_dir.glob("*.jpg")) + list(target_dir.glob("*.png")) + list(target_dir.glob("*.j*pg"))
-    if not images:
-        raise HTTPException(status_code=404, detail=f"No image files found in {breed_name}")
-
-    return FileResponse(str(images[0]))
+    raise HTTPException(status_code=404, detail=f"No sample images available for breed: {breed_name}")
 
