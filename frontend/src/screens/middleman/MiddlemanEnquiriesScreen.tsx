@@ -46,8 +46,25 @@ export const MiddlemanEnquiriesScreen: React.FC<MiddlemanEnquiriesScreenProps> =
     }
   };
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
@@ -65,7 +82,10 @@ export const MiddlemanEnquiriesScreen: React.FC<MiddlemanEnquiriesScreenProps> =
           <Text style={styles.loadingText}>Loading sent offers...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.list}>
+        <ScrollView
+          style={isDesktop ? styles.desktopScrollView : undefined}
+          contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}
+        >
           {enquiries.length === 0 ? (
             <View style={styles.emptyCard}>
               <MessageSquare size={40} color={colors.textMuted} />
@@ -76,7 +96,13 @@ export const MiddlemanEnquiriesScreen: React.FC<MiddlemanEnquiriesScreenProps> =
             </View>
           ) : (
             enquiries.map((enquiry) => (
-              <View key={enquiry.id} style={styles.card}>
+              <View
+                key={enquiry.id}
+                style={[
+                  styles.card,
+                  isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                ]}
+              >
                 <View style={styles.cardTop}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.listingTitle}>
@@ -142,6 +168,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,6 +203,12 @@ const styles = StyleSheet.create({
   list: {
     padding: 14,
     gap: 12,
+  },
+  desktopList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    padding: 20,
   },
   card: {
     backgroundColor: colors.surface,

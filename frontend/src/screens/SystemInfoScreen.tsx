@@ -30,6 +30,19 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+
   useEffect(() => {
     checkHealth()
       .then((data) => setHealth(data))
@@ -38,7 +51,10 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
   }, []);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Back button */}
       <TouchableOpacity style={styles.backBtn} onPress={onBack} activeOpacity={0.7}>
         <ChevronLeft size={18} color={colors.textSecondary} />
@@ -53,8 +69,10 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
         </Text>
       </View>
 
+      <View style={isDesktop ? styles.desktopGrid : undefined}>
+
       {/* Live Service Status */}
-      <View style={styles.card}>
+      <View style={[styles.card, isDesktop && styles.desktopCard]}>
         <View style={styles.cardHeader}>
           <Server size={18} color={colors.primary} />
           <Text style={styles.cardTitle}>Live Inference Service Status</Text>
@@ -119,7 +137,7 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
       </View>
 
       {/* Vision Model Architecture */}
-      <View style={styles.card}>
+      <View style={[styles.card, isDesktop && styles.desktopCard]}>
         <View style={styles.cardHeader}>
           <Layers size={18} color={colors.primary} />
           <Text style={styles.cardTitle}>Vision Pipeline Architecture</Text>
@@ -154,7 +172,7 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
       </View>
 
       {/* Zero LLM Guarantee */}
-      <View style={[styles.card, styles.guaranteeCard]}>
+      <View style={[styles.card, styles.guaranteeCard, isDesktop && styles.desktopCard]}>
         <View style={styles.cardHeader}>
           <ShieldCheck size={18} color="#15803d" />
           <Text style={[styles.cardTitle, { color: '#15803d' }]}>
@@ -170,7 +188,7 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
       </View>
 
       {/* Human in the Loop Rationale */}
-      <View style={styles.card}>
+      <View style={[styles.card, isDesktop && styles.desktopCard]}>
         <View style={styles.cardHeader}>
           <Sparkles size={18} color={colors.accent} />
           <Text style={styles.cardTitle}>Why Top-3 Probabilities?</Text>
@@ -184,6 +202,7 @@ export const SystemInfoScreen: React.FC<SystemInfoScreenProps> = ({ onBack }) =>
           entries into the Bharat Pashudhan National Database.
         </Text>
       </View>
+      </View>
     </ScrollView>
   );
 };
@@ -193,9 +212,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
     paddingBottom: 32,
+  },
+  desktopContent: {
+    padding: 0,
+    paddingBottom: 32,
+  },
+  desktopGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    alignItems: 'stretch',
   },
   backBtn: {
     flexDirection: 'row',
@@ -230,6 +265,10 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     padding: 14,
     marginBottom: 14,
+  },
+  desktopCard: {
+    width: 'calc(50% - 8px)' as any,
+    marginBottom: 0,
   },
   cardHeader: {
     flexDirection: 'row',

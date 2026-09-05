@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {
   Search,
@@ -163,8 +164,13 @@ export const MiddlemanMarketplaceScreen: React.FC<MiddlemanMarketplaceScreenProp
     return true;
   });
 
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       {/* Search & Filter Header */}
       <View style={styles.header}>
         <View style={styles.searchRow}>
@@ -219,7 +225,10 @@ export const MiddlemanMarketplaceScreen: React.FC<MiddlemanMarketplaceScreenProp
           <Text style={styles.loadingText}>Fetching marketplace listings...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}>
+        <ScrollView
+          style={isDesktop ? styles.desktopScrollView : undefined}
+          contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}
+        >
           {filtered.length === 0 ? (
             <View style={styles.emptyCard}>
               <Text style={styles.emptyTitle}>No matching cattle or buffalo listings</Text>
@@ -231,7 +240,14 @@ export const MiddlemanMarketplaceScreen: React.FC<MiddlemanMarketplaceScreenProp
               const compared = isSelectedForCompare(item.id);
 
               return (
-                <View key={item.id} style={[styles.card, isDesktop && styles.desktopCard]}>
+                <View
+                  key={item.id}
+                  style={[
+                    styles.card,
+                    isDesktop && styles.desktopCard,
+                    isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                  ]}
+                >
                   <View style={styles.cardHeader}>
                     <View style={styles.avatar}>
                       <Text style={{ fontSize: 22 }}>
@@ -467,6 +483,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   list: {
     padding: 14,
     gap: 12,
@@ -486,11 +510,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   desktopCard: {
-    width: 'calc(50% - 8px)' as any,
-    minWidth: 320,
+    minWidth: 280,
     flexGrow: 1,
     flexShrink: 1,
-    maxWidth: '49.5%' as any,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -653,24 +675,26 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   modalBackdrop: {
-    position: 'absolute',
+    position: (Platform.OS === 'web' ? 'fixed' : 'absolute') as any,
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    zIndex: 999,
+    zIndex: 9999,
   },
   modalCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 20,
+    padding: 24,
     width: '100%',
-    maxWidth: 400,
-    gap: 12,
+    maxWidth: 460,
+    maxHeight: ('90vh' as any),
+    overflowY: ('auto' as any),
+    gap: 14,
   },
   modalTop: {
     flexDirection: 'row',

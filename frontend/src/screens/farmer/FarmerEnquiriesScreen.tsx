@@ -58,8 +58,25 @@ export const FarmerEnquiriesScreen: React.FC<FarmerEnquiriesScreenProps> = ({
     }
   };
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       <View style={styles.header}>
         <Text style={styles.title}>Buyer Enquiries</Text>
         <Text style={styles.subtitle}>
@@ -73,7 +90,10 @@ export const FarmerEnquiriesScreen: React.FC<FarmerEnquiriesScreenProps> = ({
           <Text style={styles.loadingText}>Fetching enquiries...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.list}>
+        <ScrollView
+          style={isDesktop ? styles.desktopScrollView : undefined}
+          contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}
+        >
           {enquiries.length === 0 ? (
             <View style={styles.emptyCard}>
               <MessageSquare size={36} color={colors.textMuted} />
@@ -84,7 +104,13 @@ export const FarmerEnquiriesScreen: React.FC<FarmerEnquiriesScreenProps> = ({
             </View>
           ) : (
             enquiries.map((enquiry) => (
-              <View key={enquiry.id} style={styles.card}>
+              <View
+                key={enquiry.id}
+                style={[
+                  styles.card,
+                  isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                ]}
+              >
                 <View style={styles.cardTop}>
                   <View style={styles.buyerInfo}>
                     <View style={styles.buyerAvatar}>
@@ -176,6 +202,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   header: {
     padding: 16,
     backgroundColor: colors.surface,
@@ -195,6 +229,12 @@ const styles = StyleSheet.create({
   list: {
     padding: 16,
     gap: 12,
+  },
+  desktopList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    padding: 20,
   },
   card: {
     backgroundColor: colors.surface,

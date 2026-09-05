@@ -73,7 +73,10 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   const isBuffalo = prediction.animal_type === 'Buffalo';
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       <View style={[styles.mainLayout, isDesktop && styles.desktopMainLayout]}>
         {/* Left Column: Image, Tag & Diagnostic Traits */}
         <View style={[styles.leftCol, isDesktop && styles.desktopLeftCol]}>
@@ -265,8 +268,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
+    paddingBottom: 32,
+  },
+  desktopContent: {
+    padding: 0,
     paddingBottom: 32,
   },
   mainLayout: {

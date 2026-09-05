@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -32,6 +32,19 @@ export const AnimalComparisonScreen: React.FC<AnimalComparisonScreenProps> = ({
   onRemoveFromCompare,
   onClearCompare,
 }) => {
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+
   // If list is empty, provide demo fallback comparison items so judges can test it immediately
   const activeList: MarketplaceListing[] =
     compareList.length > 0
@@ -82,7 +95,7 @@ export const AnimalComparisonScreen: React.FC<AnimalComparisonScreenProps> = ({
         ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       {/* Top Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -110,12 +123,20 @@ export const AnimalComparisonScreen: React.FC<AnimalComparisonScreenProps> = ({
         </View>
       </View>
 
-      <ScrollView horizontal contentContainerStyle={styles.tableScroll}>
-        <View style={styles.tableWrapper}>
+      <ScrollView
+        horizontal={!isDesktop}
+        showsHorizontalScrollIndicator={!isDesktop}
+        style={isDesktop ? styles.desktopScrollView : undefined}
+        contentContainerStyle={[styles.tableScroll, isDesktop && styles.desktopTableScroll]}
+      >
+        <View style={[styles.tableWrapper, isDesktop && styles.desktopTableWrapper]}>
           {/* Comparison Cards Row */}
-          <View style={styles.cardRow}>
+          <View style={[styles.cardRow, isDesktop && styles.desktopCardRow]}>
             {activeList.map((item, idx) => (
-              <View key={item.id} style={styles.compareCol}>
+              <View
+                key={item.id}
+                style={[styles.compareCol, isDesktop && styles.desktopCompareCol]}
+              >
                 <View style={styles.colHeader}>
                   <View style={styles.avatar}>
                     <Text style={{ fontSize: 26 }}>
@@ -257,15 +278,36 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.textSecondary,
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   tableScroll: {
     padding: 14,
+  },
+  desktopTableScroll: {
+    padding: 0,
+    paddingBottom: 32,
+    width: '100%',
   },
   tableWrapper: {
     minWidth: '100%',
   },
+  desktopTableWrapper: {
+    width: '100%',
+  },
   cardRow: {
     flexDirection: 'row',
     gap: 14,
+  },
+  desktopCardRow: {
+    width: '100%',
+    flexWrap: 'wrap',
+    gap: 16,
   },
   compareCol: {
     width: 250,
@@ -275,6 +317,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     gap: 12,
+  },
+  desktopCompareCol: {
+    flex: 1,
+    minWidth: 280,
+    maxWidth: 440,
+    width: 'calc(33.333% - 11px)' as any,
   },
   colHeader: {
     alignItems: 'center',

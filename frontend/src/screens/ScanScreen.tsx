@@ -135,7 +135,10 @@ export const ScanScreen: React.FC<ScanScreenProps> = ({
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Hidden file inputs for Web */}
       {Platform.OS === 'web' && (
         <>
@@ -328,8 +331,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
+    paddingBottom: 32,
+  },
+  desktopContent: {
+    padding: 0,
     paddingBottom: 32,
   },
   mainLayout: {

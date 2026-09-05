@@ -387,14 +387,17 @@ const styles = StyleSheet.create({
   desktopContentArea: {
     flex: 1,
     overflowY: 'auto' as any,
-    paddingHorizontal: 24,
-    paddingVertical: 18,
+    overflowX: 'hidden' as any,
+    backgroundColor: colors.background,
+    width: '100%',
   },
   desktopContentInner: {
     width: '100%',
-    maxWidth: 1440,
+    maxWidth: 1720,
     marginHorizontal: 'auto' as any,
-    flex: 1,
+    paddingHorizontal: 32,
+    paddingVertical: 24,
+    minHeight: '100%',
   },
 
   /* Mobile Fallback Styles */

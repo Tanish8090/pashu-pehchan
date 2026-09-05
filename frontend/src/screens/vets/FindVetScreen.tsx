@@ -87,8 +87,13 @@ export const FindVetScreen: React.FC<FindVetScreenProps> = ({ onNavigate }) => {
     return true;
   });
 
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       {/* 24x7 Emergency Alert Header */}
       <View style={styles.emergencyBanner}>
         <View style={styles.emergencyLeft}>
@@ -146,14 +151,24 @@ export const FindVetScreen: React.FC<FindVetScreenProps> = ({ onNavigate }) => {
           <Text style={styles.loadingText}>Locating nearby veterinary facilities...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}>
+        <ScrollView
+          style={isDesktop ? styles.desktopScrollView : undefined}
+          contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}
+        >
           {filteredVets.map((vet) => {
             const isEmergency = vet.is_emergency_24x7 === 1 || (vet as any).is_emergency === 1;
             const categoryDisplay = vet.category || (vet as any).facility_type || 'Veterinary Hospital';
             const phone = vet.emergency_phone || vet.phone || '+91 2692 260120';
 
             return (
-              <View key={vet.id} style={[styles.card, isDesktop && styles.desktopCard]}>
+              <View
+                key={vet.id}
+                style={[
+                  styles.card,
+                  isDesktop && styles.desktopCard,
+                  isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                ]}
+              >
                 <View style={styles.cardHeader}>
                   <View style={styles.clinicIconBox}>
                     <Stethoscope size={22} color={colors.primary} />
@@ -293,6 +308,14 @@ const styles = StyleSheet.create({
   catBtnTextActive: {
     color: '#ffffff',
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   list: {
     padding: 14,
     gap: 12,
@@ -312,11 +335,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   desktopCard: {
-    width: 'calc(50% - 8px)' as any,
-    minWidth: 320,
+    minWidth: 280,
     flexGrow: 1,
     flexShrink: 1,
-    maxWidth: '49.5%' as any,
   },
   cardHeader: {
     flexDirection: 'row',

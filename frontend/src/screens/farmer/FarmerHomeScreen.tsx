@@ -70,7 +70,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, isDesktop && styles.desktopContainer]}
       contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
       showsVerticalScrollIndicator={false}
     >
@@ -419,13 +419,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopContainer: {
+    flex: 'none' as any,
+    height: 'auto' as any,
+    overflow: 'visible' as any,
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
     gap: 18,
   },
   desktopContent: {
-    padding: 24,
-    gap: 22,
+    padding: 0,
+    paddingBottom: 36,
+    gap: 24,
   },
   welcomeCard: {
     flexDirection: 'row',

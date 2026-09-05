@@ -55,9 +55,31 @@ export const BreedLibraryScreen: React.FC<BreedLibraryScreenProps> = ({
   const cattleCount = breeds.filter((b) => b.animal_type === 'Cattle').length;
   const buffaloCount = breeds.filter((b) => b.animal_type === 'Buffalo').length;
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const breedCardWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 10px)' as any)
+      : windowWidth >= 768
+      ? ('calc(50% - 8px)' as any)
+      : ('100%' as any);
+
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
+      <ScrollView
+        style={isDesktop ? styles.desktopScrollView : undefined}
+        contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+      >
         {/* Title */}
         <View style={styles.titleSection}>
           <Text style={styles.screenTitle}>ICAR-NBAGR Breed Library</Text>
@@ -148,13 +170,19 @@ export const BreedLibraryScreen: React.FC<BreedLibraryScreenProps> = ({
             <Text style={styles.emptyText}>No breeds found matching your criteria</Text>
           </View>
         ) : (
-          <View style={styles.breedList}>
+          <View style={[styles.breedList, isDesktop && styles.desktopBreedList]}>
             {filteredBreeds.map((b) => {
               const isExpanded = expandedBreed === b.breed;
               const isBuffalo = b.animal_type === 'Buffalo';
 
               return (
-                <View key={b.breed} style={styles.breedCard}>
+                <View
+                  key={b.breed}
+                  style={[
+                    styles.breedCard,
+                    isDesktop && { width: breedCardWidth, maxWidth: breedCardWidth },
+                  ]}
+                >
                   <TouchableOpacity
                     style={styles.cardHeader}
                     onPress={() =>
@@ -250,8 +278,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
+    paddingBottom: 32,
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
+  desktopContent: {
+    padding: 0,
     paddingBottom: 32,
   },
   titleSection: {
@@ -326,6 +366,11 @@ const styles = StyleSheet.create({
   },
   breedList: {
     gap: 8,
+  },
+  desktopBreedList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
   },
   breedCard: {
     backgroundColor: colors.surface,

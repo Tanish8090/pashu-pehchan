@@ -327,6 +327,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     zIndex: 100,
+    overflowY: 'auto' as any,
+    overflowX: 'hidden' as any,
   },
   brandHeader: {
     paddingBottom: 10,

@@ -46,8 +46,28 @@ export const DashboardScreen: React.FC = () => {
   const medPct = Math.round((medConf / total) * 100);
   const lowPct = Math.round((lowConf / total) * 100);
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const metricCardWidth =
+    windowWidth >= 1024
+      ? ('calc(25% - 8px)' as any)
+      : ('calc(50% - 6px)' as any);
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Title */}
       <View style={styles.titleRow}>
         <View>
@@ -74,13 +94,13 @@ export const DashboardScreen: React.FC = () => {
         <>
           {/* KPI Metrics Grid */}
           <View style={styles.metricsGrid}>
-            <View style={styles.metricCard}>
+            <View style={[styles.metricCard, isDesktop && { width: metricCardWidth, maxWidth: metricCardWidth }]}>
               <Text style={styles.metricLabel}>TOTAL AUDITED</Text>
               <Text style={styles.metricValue}>{stats?.total_records ?? 0}</Text>
               <Text style={styles.metricSub}>Animals registered</Text>
             </View>
 
-            <View style={styles.metricCard}>
+            <View style={[styles.metricCard, isDesktop && { width: metricCardWidth, maxWidth: metricCardWidth }]}>
               <Text style={styles.metricLabel}>HUMAN VERIFIED</Text>
               <Text style={[styles.metricValue, { color: colors.success }]}>
                 {stats?.verification_rate ?? 0}%
@@ -90,7 +110,7 @@ export const DashboardScreen: React.FC = () => {
               </Text>
             </View>
 
-            <View style={styles.metricCard}>
+            <View style={[styles.metricCard, isDesktop && { width: metricCardWidth, maxWidth: metricCardWidth }]}>
               <Text style={styles.metricLabel}>OVERRIDDEN</Text>
               <Text style={[styles.metricValue, { color: colors.warning }]}>
                 {stats?.overridden_records ?? 0}
@@ -98,7 +118,7 @@ export const DashboardScreen: React.FC = () => {
               <Text style={styles.metricSub}>Field corrections</Text>
             </View>
 
-            <View style={styles.metricCard}>
+            <View style={[styles.metricCard, isDesktop && { width: metricCardWidth, maxWidth: metricCardWidth }]}>
               <Text style={styles.metricLabel}>AVG CONFIDENCE</Text>
               <Text style={[styles.metricValue, { color: colors.primary }]}>
                 {stats?.average_confidence ?? 0}%
@@ -217,6 +237,16 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     paddingBottom: 32,
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
+  desktopContent: {
+    padding: 0,
+    paddingBottom: 32,
+    gap: 16,
   },
   titleRow: {
     flexDirection: 'row',

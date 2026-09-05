@@ -51,8 +51,28 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
     }
   };
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const statTileWidth =
+    windowWidth >= 1024
+      ? ('calc(25% - 9px)' as any)
+      : ('calc(50% - 6px)' as any);
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Top Banner */}
       <View style={styles.banner}>
         <View>
@@ -111,7 +131,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
       {/* Stats Cards */}
       <Text style={styles.sectionTitle}>Platform Aggregate Metrics</Text>
       <View style={styles.statsGrid}>
-        <View style={styles.statTile}>
+        <View style={[styles.statTile, isDesktop && { width: statTileWidth, flexGrow: 1 }]}>
           <View style={[styles.tileIcon, { backgroundColor: colors.primarySoft }]}>
             <Users size={18} color={colors.primary} />
           </View>
@@ -122,7 +142,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
           </Text>
         </View>
 
-        <View style={styles.statTile}>
+        <View style={[styles.statTile, isDesktop && { width: statTileWidth, flexGrow: 1 }]}>
           <View style={[styles.tileIcon, { backgroundColor: '#dcfce7' }]}>
             <Layers size={18} color={colors.success} />
           </View>
@@ -133,7 +153,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
           </Text>
         </View>
 
-        <View style={styles.statTile}>
+        <View style={[styles.statTile, isDesktop && { width: statTileWidth, flexGrow: 1 }]}>
           <View style={[styles.tileIcon, { backgroundColor: '#fef3c7' }]}>
             <ShoppingBag size={18} color={colors.warning} />
           </View>
@@ -142,7 +162,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
           <Text style={styles.statSub}>PashuPehchan Marketplace</Text>
         </View>
 
-        <View style={styles.statTile}>
+        <View style={[styles.statTile, isDesktop && { width: statTileWidth, flexGrow: 1 }]}>
           <View style={[styles.tileIcon, { backgroundColor: '#dbeafe' }]}>
             <Clock size={18} color={colors.info} />
           </View>
@@ -154,9 +174,9 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
 
       {/* System Governance Links */}
       <Text style={styles.sectionTitle}>Administrative Shortcuts</Text>
-      <View style={styles.actionList}>
+      <View style={[styles.actionList, isDesktop && styles.desktopActionList]}>
         <TouchableOpacity
-          style={styles.actionRow}
+          style={[styles.actionRow, isDesktop && styles.desktopActionRow]}
           onPress={() => onNavigate('dashboard')}
         >
           <Database size={18} color={colors.primary} />
@@ -167,7 +187,7 @@ export const AdminScreen: React.FC<AdminScreenProps> = ({ onNavigate }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.actionRow}
+          style={[styles.actionRow, isDesktop && styles.desktopActionRow]}
           onPress={() => onNavigate('system_info')}
         >
           <ShieldCheck size={18} color={colors.primary} />
@@ -189,6 +209,15 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 16,
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
+  desktopContent: {
+    padding: 0,
+    gap: 20,
   },
   banner: {
     flexDirection: 'row',
@@ -322,6 +351,11 @@ const styles = StyleSheet.create({
   actionList: {
     gap: 10,
   },
+  desktopActionList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+  },
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -331,6 +365,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  desktopActionRow: {
+    flex: 1,
+    minWidth: 300,
   },
   actionText: {
     fontSize: 13,

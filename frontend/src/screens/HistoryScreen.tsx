@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Modal,
+  Platform,
 } from 'react-native';
 import {
   Search,
@@ -78,9 +79,29 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({ onScanNew }) => {
     };
   };
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
+      <ScrollView
+        style={isDesktop ? styles.desktopScrollView : undefined}
+        contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+      >
         {/* Title */}
         <View style={styles.titleSection}>
           <Text style={styles.screenTitle}>Verification Audit Trail</Text>
@@ -154,7 +175,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({ onScanNew }) => {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.recordsList}>
+          <View style={[styles.recordsList, isDesktop && styles.desktopRecordsList]}>
             {records.map((rec) => {
               const badge = getStatusBadge(rec.verification_status);
               const isOverridden = rec.verification_status === 'Overridden';
@@ -162,7 +183,10 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({ onScanNew }) => {
               return (
                 <TouchableOpacity
                   key={rec.id}
-                  style={styles.recordCard}
+                  style={[
+                    styles.recordCard,
+                    isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                  ]}
                   onPress={() => setSelectedRecord(rec)}
                   activeOpacity={0.75}
                 >
@@ -329,8 +353,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
+    paddingBottom: 32,
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
+  desktopContent: {
+    padding: 0,
     paddingBottom: 32,
   },
   titleSection: {
@@ -430,6 +466,11 @@ const styles = StyleSheet.create({
   },
   recordsList: {
     gap: 10,
+  },
+  desktopRecordsList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
   },
   recordCard: {
     backgroundColor: colors.surface,
@@ -547,13 +588,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    position: (Platform.OS === 'web' ? 'fixed' : 'absolute') as any,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
   },
   modalCard: {
     backgroundColor: colors.surface,
     borderRadius: 16,
     width: '100%',
-    maxWidth: 420,
-    maxHeight: '85%',
+    maxWidth: 520,
+    maxHeight: ('90vh' as any),
+    overflowY: ('auto' as any),
     padding: 18,
   },
   modalHeader: {

@@ -77,8 +77,16 @@ export const MiddlemanHomeScreen: React.FC<MiddlemanHomeScreenProps> = ({
 
   const popularBreeds = ['Gir', 'Murrah', 'Kankrej', 'Sahiwal', 'Jaffarabadi'];
 
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Trader Welcome Header */}
       <View style={styles.headerBanner}>
         <View>
@@ -183,7 +191,14 @@ export const MiddlemanHomeScreen: React.FC<MiddlemanHomeScreenProps> = ({
       ) : (
         <View style={[styles.listingGrid, isDesktop && styles.desktopListingGrid]}>
           {recentListings.map((listing) => (
-            <View key={listing.id} style={[styles.listingCard, isDesktop && styles.desktopListingCard]}>
+            <View
+              key={listing.id}
+              style={[
+                styles.listingCard,
+                isDesktop && styles.desktopListingCard,
+                isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+              ]}
+            >
               <View style={styles.cardTopRow}>
                 <View style={styles.speciesIcon}>
                   <Text style={{ fontSize: 24 }}>
@@ -260,6 +275,15 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 16,
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
+  desktopContent: {
+    padding: 0,
+    gap: 20,
   },
   headerBanner: {
     flexDirection: 'row',
@@ -403,11 +427,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   desktopListingCard: {
-    width: 'calc(50% - 8px)' as any,
-    minWidth: 320,
+    minWidth: 280,
     flexGrow: 1,
     flexShrink: 1,
-    maxWidth: '49.5%' as any,
   },
   cardTopRow: {
     flexDirection: 'row',

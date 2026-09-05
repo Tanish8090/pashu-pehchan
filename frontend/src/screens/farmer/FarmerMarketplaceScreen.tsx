@@ -60,8 +60,25 @@ export const FarmerMarketplaceScreen: React.FC<FarmerMarketplaceScreenProps> = (
     }
   };
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const cardDesktopWidth =
+    windowWidth >= 1350
+      ? ('calc(33.333% - 11px)' as any)
+      : ('calc(50% - 8px)' as any);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDesktop && styles.desktopContainer]}>
       {/* Header Info */}
       <View style={styles.topInfo}>
         <View>
@@ -85,7 +102,10 @@ export const FarmerMarketplaceScreen: React.FC<FarmerMarketplaceScreenProps> = (
           <Text style={styles.loadingText}>Loading marketplace listings...</Text>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.list}>
+        <ScrollView
+          style={isDesktop ? styles.desktopScrollView : undefined}
+          contentContainerStyle={[styles.list, isDesktop && styles.desktopList]}
+        >
           {listings.length === 0 ? (
             <View style={styles.emptyCard}>
               <ShoppingBag size={40} color={colors.textMuted} />
@@ -102,7 +122,14 @@ export const FarmerMarketplaceScreen: React.FC<FarmerMarketplaceScreenProps> = (
             </View>
           ) : (
             listings.map((listing) => (
-              <View key={listing.id} style={styles.card}>
+              <View
+                key={listing.id}
+                style={[
+                  styles.card,
+                  isDesktop && styles.desktopCard,
+                  isDesktop && { width: cardDesktopWidth, maxWidth: cardDesktopWidth },
+                ]}
+              >
                 <View style={styles.cardHeader}>
                   <View style={styles.avatar}>
                     <Text style={{ fontSize: 22 }}>
@@ -223,9 +250,23 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#ffffff',
   },
+  desktopContainer: {
+    backgroundColor: 'transparent',
+  },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+  },
   list: {
     padding: 16,
     gap: 12,
+  },
+  desktopList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    padding: 20,
   },
   card: {
     backgroundColor: colors.surface,
@@ -234,6 +275,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     gap: 12,
+  },
+  desktopCard: {
+    minWidth: 280,
+    flexGrow: 1,
+    flexShrink: 1,
   },
   cardHeader: {
     flexDirection: 'row',

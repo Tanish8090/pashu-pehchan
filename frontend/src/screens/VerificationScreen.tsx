@@ -60,6 +60,19 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+
   useEffect(() => {
     getBreeds()
       .then((data) => setAllBreeds(data))
@@ -125,7 +138,10 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={isDesktop ? styles.desktopScrollView : styles.container}
+      contentContainerStyle={[styles.content, isDesktop && styles.desktopContent]}
+    >
       {/* Back button */}
       <TouchableOpacity
         style={styles.backButton}
@@ -344,9 +360,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  desktopScrollView: {
+    overflow: 'visible' as any,
+    flex: 'none' as any,
+    height: 'auto' as any,
+    backgroundColor: 'transparent',
+  },
   content: {
     padding: 16,
     paddingBottom: 36,
+  },
+  desktopContent: {
+    padding: 0,
+    paddingBottom: 36,
+    maxWidth: 960,
   },
   backButton: {
     flexDirection: 'row',
