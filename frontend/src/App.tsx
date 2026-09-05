@@ -17,6 +17,7 @@ import { LanguageProvider } from './context/LanguageContext';
 
 // Screens
 import { LandingScreen } from './screens/LandingScreen';
+import { LoginScreen, RegisterScreen } from './screens/auth';
 import { HomeScreen } from './screens/HomeScreen';
 import { ScanScreen } from './screens/ScanScreen';
 import { ResultScreen } from './screens/ResultScreen';
@@ -338,16 +339,56 @@ const MainNavigator: React.FC = () => {
         );
       case 'landing':
         return <LandingScreen onNavigate={(s) => setCurrentScreen(s)} />;
+      case 'login':
+        return (
+          <LoginScreen
+            onNavigate={(s) => setCurrentScreen(s)}
+            onLoginSuccess={(newRole) => {
+              if (newRole === 'MIDDLEMAN') setCurrentScreen('middleman_home');
+              else if (newRole === 'ADMIN') setCurrentScreen('admin');
+              else setCurrentScreen('home');
+            }}
+          />
+        );
+      case 'register':
+        return (
+          <RegisterScreen
+            onNavigate={(s) => setCurrentScreen(s)}
+            onRegisterSuccess={(newRole) => {
+              if (newRole === 'MIDDLEMAN') setCurrentScreen('middleman_home');
+              else setCurrentScreen('home');
+            }}
+          />
+        );
       default:
         return <FarmerHomeScreen onNavigate={(s) => setCurrentScreen(s)} />;
     }
   };
 
-  if (currentScreen === 'landing') {
+  if (currentScreen === 'landing' || currentScreen === 'login' || currentScreen === 'register') {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F3F8F5" />
-        <LandingScreen onNavigate={(s) => setCurrentScreen(s)} />
+        <StatusBar barStyle="dark-content" backgroundColor="#F1F8F5" />
+        {currentScreen === 'login' ? (
+          <LoginScreen
+            onNavigate={(s) => setCurrentScreen(s)}
+            onLoginSuccess={(newRole) => {
+              if (newRole === 'MIDDLEMAN') setCurrentScreen('middleman_home');
+              else if (newRole === 'ADMIN') setCurrentScreen('admin');
+              else setCurrentScreen('home');
+            }}
+          />
+        ) : currentScreen === 'register' ? (
+          <RegisterScreen
+            onNavigate={(s) => setCurrentScreen(s)}
+            onRegisterSuccess={(newRole) => {
+              if (newRole === 'MIDDLEMAN') setCurrentScreen('middleman_home');
+              else setCurrentScreen('home');
+            }}
+          />
+        ) : (
+          <LandingScreen onNavigate={(s) => setCurrentScreen(s)} />
+        )}
         {toastMessage && (
           <View style={styles.toastContainer}>
             <Text style={styles.toastText}>{toastMessage}</Text>

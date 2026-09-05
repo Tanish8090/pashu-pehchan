@@ -10,8 +10,8 @@ interface AuthContextType {
   role: UserRole | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, pass: string) => Promise<void>;
-  register: (payload: any) => Promise<void>;
+  login: (email: string, pass: string) => Promise<User>;
+  register: (payload: any) => Promise<User>;
   logout: () => Promise<void>;
   switchDemoRole: (role: UserRole) => Promise<void>;
 }
@@ -43,9 +43,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (me && me.id) {
               setUser(me);
             }
-          } catch (meErr) {
-            console.warn('Saved session token expired or invalid, auto-recovering demo farmer session:', meErr);
-            // Recover demo farmer session cleanly
+          } catch (verifyErr) {
+            // Token expired or invalid, clear and attempt fallback re-login
+            await removeItem('vetra_auth_token');
+            await removeItem('vetra_user');
+            setAuthToken(null);
+            setToken(null);
+            setUser(null);
             try {
               const data = await authService.login('farmer@vetra.in', 'farmer123');
               setAuthToken(data.access_token);
@@ -88,25 +92,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadSession();
   }, []);
 
-  const login = async (email: string, pass: string) => {
+  const login = async (email: string, pass: string): Promise<User> => {
     setIsLoading(true);
     try {
       const data = await authService.login(email, pass);
       setAuthToken(data.access_token);
       setToken(data.access_token);
       setUser(data.user);
+      return data.user;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (payload: any) => {
+  const register = async (payload: any): Promise<User> => {
     setIsLoading(true);
     try {
       const data = await authService.register(payload);
       setAuthToken(data.access_token);
       setToken(data.access_token);
       setUser(data.user);
+      return data.user;
     } finally {
       setIsLoading(false);
     }

@@ -42,7 +42,7 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
   unreadNotificationsCount = 0,
   onSearchChange,
 }) => {
-  const { user, role, switchDemoRole } = useAuth();
+  const { user, role, switchDemoRole, logout } = useAuth();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -286,6 +286,21 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
                     🛡️ Admin (Supervisor)
                   </Text>
                   {role === 'ADMIN' && <Check size={13} color={colors.primary} />}
+                </View>
+              </TouchableOpacity>
+              <View style={{ height: 1, backgroundColor: '#E2EFE7', marginVertical: 4 }} />
+              <TouchableOpacity
+                style={styles.roleMenuItem}
+                onPress={async () => {
+                  setShowRoleMenu(false);
+                  await logout();
+                  onNavigate('login');
+                }}
+              >
+                <View style={styles.roleMenuItemRow}>
+                  <Text style={[styles.roleMenuItemText, { color: colors.danger, fontWeight: '700' }]}>
+                    🚪 Sign Out
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
