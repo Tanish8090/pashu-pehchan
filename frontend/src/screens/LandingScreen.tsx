@@ -37,6 +37,9 @@ import {
 import { colors } from '../theme/colors';
 import { ScreenName, UserRole } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { DynamicSearchBar } from '../components/DynamicSearchBar';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 interface LandingScreenProps {
   onNavigate: (screen: ScreenName) => void;
@@ -44,6 +47,7 @@ interface LandingScreenProps {
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
   const { switchDemoRole } = useAuth();
+  const { t } = useLanguage();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
   const [pricingCycle, setPricingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -92,34 +96,39 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
           <View style={styles.navLinks}>
             <TouchableOpacity style={styles.navPillActive} activeOpacity={0.8}>
               <Compass size={14} color={colors.primary} />
-              <Text style={styles.navPillActiveText}>Product</Text>
+              <Text style={styles.navPillActiveText}>{t('product')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navLink} activeOpacity={0.7} onPress={() => onNavigate('breeds')}>
-              <Text style={styles.navLinkText}>Features</Text>
+              <Text style={styles.navLinkText}>{t('features')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navLink} activeOpacity={0.7} onPress={() => onNavigate('farmer_marketplace')}>
-              <Text style={styles.navLinkText}>Marketplace</Text>
+              <Text style={styles.navLinkText}>{t('marketplace')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navLink} activeOpacity={0.7} onPress={() => onNavigate('vets')}>
-              <Text style={styles.navLinkText}>Veterinary 24x7</Text>
+              <Text style={styles.navLinkText}>{t('veterinary')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.navLink} activeOpacity={0.7} onPress={() => onNavigate('system_info')}>
-              <Text style={styles.navLinkText}>AI Model</Text>
+              <Text style={styles.navLinkText}>{t('aiModel')}</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Top Right: Log in & Sign up Buttons */}
+          {/* Dynamic Real-Time Search Bar */}
+          <DynamicSearchBar onNavigate={onNavigate} />
+
+          {/* Top Right: Translate & Log in / Sign up Buttons */}
           <View style={styles.navRight}>
+            <LanguageSelector />
+
             <TouchableOpacity
               style={styles.loginBtn}
               onPress={() => handleOpenAuth('login')}
               activeOpacity={0.7}
             >
-              <Text style={styles.loginBtnText}>Log in</Text>
+              <Text style={styles.loginBtnText}>{t('login')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -127,7 +136,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
               onPress={() => handleOpenAuth('signup')}
               activeOpacity={0.85}
             >
-              <Text style={styles.signupBtnText}>Sign up</Text>
+              <Text style={styles.signupBtnText}>{t('signup')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -145,15 +154,13 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
 
         {/* Hero Title */}
         <Text style={styles.heroTitle}>
-          From Planting to Harvest -{'\n'}
-          <Text style={styles.heroTitleItalic}>One Farming Dashboard</Text>
+          {t('heroHeadline1').includes(' - ') ? t('heroHeadline1').split(' - ')[0] : t('heroHeadline1')} -{'\n'}
+          <Text style={styles.heroTitleItalic}>{t('heroHeadline1').includes(' - ') ? t('heroHeadline1').split(' - ')[1] : ''}</Text>
         </Text>
 
         {/* Hero Subtitle */}
         <Text style={styles.heroSubtitle}>
-          Get a clear and comprehensive overview of your entire livestock & agricultural operation.
-          Make smarter decisions for your herd with PashuPehchan, the interactive dashboard app that simplifies
-          indigenous breed identification, health, and fair trade.
+          {t('heroSubtitle')}
         </Text>
 
         {/* Hero CTAs */}
@@ -163,7 +170,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
             onPress={() => handleOpenAuth('signup')}
             activeOpacity={0.85}
           >
-            <Text style={styles.primaryCtaText}>Start Free Trial</Text>
+            <Text style={styles.primaryCtaText}>{t('startFreeTrial')}</Text>
             <ArrowUpRight size={18} color="#ffffff" />
           </TouchableOpacity>
 
@@ -172,7 +179,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
             onPress={() => onNavigate('scan')}
             activeOpacity={0.85}
           >
-            <Text style={styles.secondaryCtaText}>How it Works</Text>
+            <Text style={styles.secondaryCtaText}>{t('howItWorks')}</Text>
             <View style={styles.playIconCircle}>
               <Play size={12} color="#ffffff" fill="#ffffff" style={{ marginLeft: 2 }} />
             </View>
@@ -913,11 +920,12 @@ const styles = StyleSheet.create({
   navBar: {
     backgroundColor: '#FFFFFF',
     borderRadius: 40,
-    paddingVertical: 12,
-    paddingHorizontal: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 12,
     borderWidth: 1,
     borderColor: '#E2EFE7',
     boxShadow: '0 4px 20px rgba(15, 61, 36, 0.05)',
