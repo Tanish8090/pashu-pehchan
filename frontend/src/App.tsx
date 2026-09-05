@@ -43,6 +43,7 @@ import { AdminScreen } from './screens/admin/AdminScreen';
 
 import {
   ScreenName,
+  UserRole,
   PredictResponse,
   RecordResponse,
   MarketplaceListing,
@@ -112,14 +113,76 @@ const MainNavigator: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Set default initial screen based on role
+  // Role change tracking & automatic dashboard redirection
+  const prevRoleRef = React.useRef<UserRole | null>(role);
+
   useEffect(() => {
-    if (role === 'MIDDLEMAN' && currentScreen === 'home') {
-      setCurrentScreen('middleman_home');
-    } else if (role === 'ADMIN' && currentScreen === 'home') {
-      setCurrentScreen('admin');
+    if (prevRoleRef.current && prevRoleRef.current !== role) {
+      // Role actively switched -> redirect to the appropriate dashboard
+      if (role === 'MIDDLEMAN') {
+        setCurrentScreen('middleman_home');
+      } else if (role === 'ADMIN') {
+        setCurrentScreen('admin');
+      } else {
+        setCurrentScreen('home');
+      }
+    } else if (!prevRoleRef.current && role) {
+      // Initial session load -> set default dashboard if on default 'home'
+      if (role === 'MIDDLEMAN' && currentScreen === 'home') {
+        setCurrentScreen('middleman_home');
+      } else if (role === 'ADMIN' && currentScreen === 'home') {
+        setCurrentScreen('admin');
+      }
     }
+    prevRoleRef.current = role;
   }, [role]);
+
+  // Enforce role-based screen permissions guard
+  useEffect(() => {
+    if (!role) return;
+
+    if (role === 'FARMER') {
+      const farmerDisallowed: ScreenName[] = [
+        'admin',
+        'dashboard',
+        'middleman_home',
+        'middleman_marketplace',
+        'compare_animals',
+        'saved_animals',
+        'middleman_enquiries',
+      ];
+      if (farmerDisallowed.includes(currentScreen)) {
+        setCurrentScreen('home');
+      }
+    } else if (role === 'MIDDLEMAN') {
+      const middlemanDisallowed: ScreenName[] = [
+        'admin',
+        'dashboard',
+        'home',
+        'my_livestock',
+        'farmer_marketplace',
+        'farmer_enquiries',
+      ];
+      if (middlemanDisallowed.includes(currentScreen)) {
+        setCurrentScreen('middleman_home');
+      }
+    } else if (role === 'ADMIN') {
+      const adminDisallowed: ScreenName[] = [
+        'home',
+        'my_livestock',
+        'farmer_marketplace',
+        'farmer_enquiries',
+        'middleman_home',
+        'middleman_marketplace',
+        'compare_animals',
+        'saved_animals',
+        'middleman_enquiries',
+      ];
+      if (adminDisallowed.includes(currentScreen)) {
+        setCurrentScreen('admin');
+      }
+    }
+  }, [role, currentScreen]);
 
   const handlePredictionComplete = (
     result: PredictResponse,
@@ -309,7 +372,12 @@ const MainNavigator: React.FC = () => {
 
             {/* Scrollable Main Content Canvas */}
             <View style={styles.desktopContentArea}>
-              <View style={styles.desktopContentInner}>{renderScreen()}</View>
+              <View
+                key={user?.id ? `desktop-user-${user.id}-${role}` : 'desktop-anon'}
+                style={styles.desktopContentInner}
+              >
+                {renderScreen()}
+              </View>
             </View>
           </View>
         </View>
@@ -326,7 +394,12 @@ const MainNavigator: React.FC = () => {
             />
 
             {/* Viewport for Active Screen */}
-            <View style={styles.screenViewport}>{renderScreen()}</View>
+            <View
+              key={user?.id ? `mobile-user-${user.id}-${role}` : 'mobile-anon'}
+              style={styles.screenViewport}
+            >
+              {renderScreen()}
+            </View>
 
             {/* Mobile Bottom Navigation Bar */}
             <BottomNav

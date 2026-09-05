@@ -7,6 +7,7 @@ import {
   ScrollView,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {
   ShieldCheck,
@@ -29,6 +30,8 @@ import {
   Sparkles,
   Activity,
   Award,
+  Check,
+  AlertCircle,
 } from 'lucide-react';
 import { colors } from '../theme/colors';
 import { ScreenName, UserRole } from '../types';
@@ -51,13 +54,31 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 }) => {
   const { user, role, switchDemoRole } = useAuth();
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [switchError, setSwitchError] = useState<string | null>(null);
 
   const handleRoleSwitch = async (targetRole: UserRole) => {
+    if (isSwitching) return;
+    if (targetRole === role) {
+      setShowRoleDropdown(false);
+      return;
+    }
+    setIsSwitching(true);
+    setSwitchError(null);
     setShowRoleDropdown(false);
-    await switchDemoRole(targetRole);
-    if (targetRole === 'FARMER') onNavigate('home');
-    else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
-    else if (targetRole === 'ADMIN') onNavigate('admin');
+    try {
+      await switchDemoRole(targetRole);
+      if (targetRole === 'FARMER') onNavigate('home');
+      else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
+      else if (targetRole === 'ADMIN') onNavigate('admin');
+    } catch (err: any) {
+      setSwitchError('Unable to switch account. Please try again.');
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('Unable to switch account. Please try again.');
+      }
+    } finally {
+      setIsSwitching(false);
+    }
   };
 
   const getRoleBadge = () => {
@@ -170,46 +191,83 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.userName} numberOfLines={1}>
-              {user?.name || 'Ramesh Patel'}
+              {user?.name || (role === 'MIDDLEMAN' ? 'Kishore Bhai' : role === 'ADMIN' ? 'Supervisor DAHD' : 'Ramesh Patel')}
             </Text>
             <Text style={styles.userSub} numberOfLines={1}>
-              {user?.district || 'Anand'}, {user?.state || 'Gujarat'}
+              {user?.district ? `${user.district}, ${user.state || 'Gujarat'}` : (role === 'MIDDLEMAN' ? 'Ahmedabad, Gujarat' : role === 'ADMIN' ? 'Gandhinagar, Gujarat' : 'Anand, Gujarat')}
             </Text>
           </View>
         </View>
 
         {/* 1-Click Demo Switcher */}
         <TouchableOpacity
-          style={styles.switchRoleBtn}
-          onPress={() => setShowRoleDropdown(!showRoleDropdown)}
+          style={[styles.switchRoleBtn, isSwitching && styles.switchRoleBtnDisabled]}
+          onPress={() => !isSwitching && setShowRoleDropdown(!showRoleDropdown)}
           activeOpacity={0.8}
+          disabled={isSwitching}
         >
           <View style={styles.switchRoleBtnContent}>
             <UserCheck size={14} color={colors.primary} />
-            <Text style={styles.switchRoleBtnText}>{currentRoleInfo.label}</Text>
+            <Text style={styles.switchRoleBtnText}>
+              {isSwitching ? 'Switching Account...' : currentRoleInfo.label}
+            </Text>
           </View>
-          <ChevronDown size={14} color={colors.textSecondary} />
+          {isSwitching ? (
+            <ActivityIndicator size="small" color={colors.primary} />
+          ) : (
+            <ChevronDown size={14} color={colors.textSecondary} />
+          )}
         </TouchableOpacity>
+
+        {switchError ? (
+          <View style={styles.switchErrorBanner}>
+            <AlertCircle size={12} color={colors.danger} />
+            <Text style={styles.switchErrorText}>{switchError}</Text>
+          </View>
+        ) : null}
 
         {showRoleDropdown && (
           <View style={styles.roleDropdown}>
             <TouchableOpacity
               style={[styles.roleOption, role === 'FARMER' && styles.roleOptionActive]}
               onPress={() => handleRoleSwitch('FARMER')}
+              disabled={isSwitching}
+              activeOpacity={0.7}
             >
-              <Text style={styles.roleOptionText}>🌾 Farmer (Ramesh Patel)</Text>
+              <View style={styles.roleOptionInner}>
+                <Text style={[styles.roleOptionText, role === 'FARMER' && styles.roleOptionTextActive]}>
+                  🌾 Farmer (Ramesh Patel)
+                </Text>
+                {role === 'FARMER' && <Check size={14} color={colors.primary} />}
+              </View>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={[styles.roleOption, role === 'MIDDLEMAN' && styles.roleOptionActive]}
               onPress={() => handleRoleSwitch('MIDDLEMAN')}
+              disabled={isSwitching}
+              activeOpacity={0.7}
             >
-              <Text style={styles.roleOptionText}>🤝 Middleman (Kishore Bhai)</Text>
+              <View style={styles.roleOptionInner}>
+                <Text style={[styles.roleOptionText, role === 'MIDDLEMAN' && styles.roleOptionTextActive]}>
+                  🤝 Middleman (Kishore Bhai)
+                </Text>
+                {role === 'MIDDLEMAN' && <Check size={14} color={colors.primary} />}
+              </View>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={[styles.roleOption, role === 'ADMIN' && styles.roleOptionActive]}
               onPress={() => handleRoleSwitch('ADMIN')}
+              disabled={isSwitching}
+              activeOpacity={0.7}
             >
-              <Text style={styles.roleOptionText}>🛡️ Admin (Supervisor DAHD)</Text>
+              <View style={styles.roleOptionInner}>
+                <Text style={[styles.roleOptionText, role === 'ADMIN' && styles.roleOptionTextActive]}>
+                  🛡️ Admin (Supervisor DAHD)
+                </Text>
+                {role === 'ADMIN' && <Check size={14} color={colors.primary} />}
+              </View>
             </TouchableOpacity>
           </View>
         )}
@@ -425,6 +483,25 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.primaryDark,
   },
+  switchRoleBtnDisabled: {
+    opacity: 0.7,
+  },
+  switchErrorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: '#fef2f2',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#fecaca',
+  },
+  switchErrorText: {
+    fontSize: 10,
+    color: colors.danger,
+    fontWeight: '600',
+  },
   roleDropdown: {
     position: 'absolute',
     top: 86,
@@ -450,10 +527,20 @@ const styles = StyleSheet.create({
   roleOptionActive: {
     backgroundColor: colors.primarySoft,
   },
+  roleOptionInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   roleOptionText: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.textPrimary,
+  },
+  roleOptionTextActive: {
+    color: colors.primaryDark,
+    fontWeight: '700',
   },
   navScroll: {
     flex: 1,

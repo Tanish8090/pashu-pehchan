@@ -31,8 +31,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (savedToken && savedUserStr) {
           setToken(savedToken);
           setUser(JSON.parse(savedUserStr));
-          // Optionally verify with /me in background
-          authService.getMe().then((me) => setUser(me)).catch(() => {});
+          // Verify with /me in background to ensure valid session
+          authService.getMe().then((me) => {
+            if (me && me.id) {
+              setUser(me);
+            }
+          }).catch(async () => {
+            // If token is invalid or expired, re-authenticate cleanly
+            try {
+              const data = await authService.login('farmer@vetra.in', 'farmer123');
+              setToken(data.access_token);
+              setUser(data.user);
+            } catch {}
+          });
         } else {
           // Auto-login as Ramesh (Farmer) by default for demo seamlessness
           try {
@@ -100,6 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await authService.login(email, pass);
       setToken(data.access_token);
       setUser(data.user);
+    } catch (err: any) {
+      console.error('switchDemoRole error:', err);
+      throw new Error('Unable to switch account. Please try again.');
     } finally {
       setIsLoading(false);
     }

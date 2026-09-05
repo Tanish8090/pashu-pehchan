@@ -5,7 +5,11 @@ import { setItem, removeItem } from '../../components/adapters/storage';
 export async function login(email: string, password: string): Promise<AuthResponse> {
   const data = await apiRequest<AuthResponse>('/api/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      phone_or_email: email,
+      email: email,
+      password: password,
+    }),
   });
   if (data.access_token) {
     await setItem('vetra_auth_token', data.access_token);

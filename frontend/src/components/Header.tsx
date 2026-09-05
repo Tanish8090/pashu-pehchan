@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { ShieldCheck, Info, UserCheck, ChevronDown, Bell } from 'lucide-react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { ShieldCheck, Info, UserCheck, ChevronDown, Bell, Check } from 'lucide-react';
 import { colors } from '../theme/colors';
 import { ScreenName, UserRole } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -22,16 +22,32 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { user, role, switchDemoRole } = useAuth();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   const handleRoleSwitch = async (targetRole: UserRole) => {
+    if (isSwitching) return;
+    if (targetRole === role) {
+      setShowRoleMenu(false);
+      return;
+    }
+    setIsSwitching(true);
     setShowRoleMenu(false);
-    await switchDemoRole(targetRole);
-    if (targetRole === 'FARMER') onNavigate('home');
-    else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
-    else if (targetRole === 'ADMIN') onNavigate('admin');
+    try {
+      await switchDemoRole(targetRole);
+      if (targetRole === 'FARMER') onNavigate('home');
+      else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
+      else if (targetRole === 'ADMIN') onNavigate('admin');
+    } catch (err: any) {
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('Unable to switch account. Please try again.');
+      }
+    } finally {
+      setIsSwitching(false);
+    }
   };
 
   const getRoleLabel = () => {
+    if (isSwitching) return 'Switching...';
     if (role === 'MIDDLEMAN') return 'Middleman';
     if (role === 'ADMIN') return 'Supervisor';
     return 'Farmer';
@@ -60,13 +76,18 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Quick Role Switcher for Hackathon Demo */}
           <View style={styles.roleDropdownWrapper}>
             <TouchableOpacity
-              style={styles.roleSelector}
-              onPress={() => setShowRoleMenu(!showRoleMenu)}
+              style={[styles.roleSelector, isSwitching && { opacity: 0.7 }]}
+              onPress={() => !isSwitching && setShowRoleMenu(!showRoleMenu)}
               activeOpacity={0.8}
+              disabled={isSwitching}
             >
               <UserCheck size={14} color={colors.primary} />
               <Text style={styles.roleText}>{getRoleLabel()}</Text>
-              <ChevronDown size={12} color={colors.textSecondary} />
+              {isSwitching ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <ChevronDown size={12} color={colors.textSecondary} />
+              )}
             </TouchableOpacity>
 
             {showRoleMenu && (
@@ -74,20 +95,40 @@ export const Header: React.FC<HeaderProps> = ({
                 <TouchableOpacity
                   style={[styles.roleMenuItem, role === 'FARMER' && styles.roleMenuItemActive]}
                   onPress={() => handleRoleSwitch('FARMER')}
+                  disabled={isSwitching}
                 >
-                  <Text style={styles.roleMenuText}>🌾 Farmer (Ramesh)</Text>
+                  <View style={styles.roleMenuItemRow}>
+                    <Text style={[styles.roleMenuText, role === 'FARMER' && styles.roleMenuTextActive]}>
+                      🌾 Farmer (Ramesh)
+                    </Text>
+                    {role === 'FARMER' && <Check size={12} color={colors.primary} />}
+                  </View>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={[styles.roleMenuItem, role === 'MIDDLEMAN' && styles.roleMenuItemActive]}
                   onPress={() => handleRoleSwitch('MIDDLEMAN')}
+                  disabled={isSwitching}
                 >
-                  <Text style={styles.roleMenuText}>🤝 Middleman (Kishore)</Text>
+                  <View style={styles.roleMenuItemRow}>
+                    <Text style={[styles.roleMenuText, role === 'MIDDLEMAN' && styles.roleMenuTextActive]}>
+                      🤝 Middleman (Kishore)
+                    </Text>
+                    {role === 'MIDDLEMAN' && <Check size={12} color={colors.primary} />}
+                  </View>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={[styles.roleMenuItem, role === 'ADMIN' && styles.roleMenuItemActive]}
                   onPress={() => handleRoleSwitch('ADMIN')}
+                  disabled={isSwitching}
                 >
-                  <Text style={styles.roleMenuText}>🛡️ Admin (Supervisor)</Text>
+                  <View style={styles.roleMenuItemRow}>
+                    <Text style={[styles.roleMenuText, role === 'ADMIN' && styles.roleMenuTextActive]}>
+                      🛡️ Admin (Supervisor)
+                    </Text>
+                    {role === 'ADMIN' && <Check size={12} color={colors.primary} />}
+                  </View>
                 </TouchableOpacity>
               </View>
             )}
@@ -205,10 +246,20 @@ const styles = StyleSheet.create({
   roleMenuItemActive: {
     backgroundColor: colors.primarySoft,
   },
+  roleMenuItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   roleMenuText: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.textPrimary,
+  },
+  roleMenuTextActive: {
+    color: colors.primaryDark,
+    fontWeight: '700',
   },
   connectionBadge: {
     flexDirection: 'row',

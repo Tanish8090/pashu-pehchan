@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Search,
@@ -16,6 +17,7 @@ import {
   ChevronDown,
   Sparkles,
   ShieldCheck,
+  Check,
 } from 'lucide-react';
 import { colors } from '../theme/colors';
 import { ScreenName, UserRole } from '../types';
@@ -40,14 +42,29 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
 }) => {
   const { user, role, switchDemoRole } = useAuth();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleRoleSwitch = async (targetRole: UserRole) => {
+    if (isSwitching) return;
+    if (targetRole === role) {
+      setShowRoleMenu(false);
+      return;
+    }
+    setIsSwitching(true);
     setShowRoleMenu(false);
-    await switchDemoRole(targetRole);
-    if (targetRole === 'FARMER') onNavigate('home');
-    else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
-    else if (targetRole === 'ADMIN') onNavigate('admin');
+    try {
+      await switchDemoRole(targetRole);
+      if (targetRole === 'FARMER') onNavigate('home');
+      else if (targetRole === 'MIDDLEMAN') onNavigate('middleman_home');
+      else if (targetRole === 'ADMIN') onNavigate('admin');
+    } catch (err: any) {
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('Unable to switch account. Please try again.');
+      }
+    } finally {
+      setIsSwitching(false);
+    }
   };
 
   const getScreenTitle = (): { title: string; subtitle: string } => {
@@ -212,19 +229,26 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
         {/* 1-Click Role Switcher */}
         <View style={styles.roleDropdownWrapper}>
           <TouchableOpacity
-            style={styles.roleBtn}
-            onPress={() => setShowRoleMenu(!showRoleMenu)}
+            style={[styles.roleBtn, isSwitching && { opacity: 0.7 }]}
+            onPress={() => !isSwitching && setShowRoleMenu(!showRoleMenu)}
             activeOpacity={0.8}
+            disabled={isSwitching}
           >
             <UserCheck size={14} color={colors.primary} />
             <Text style={styles.roleBtnText}>
-              {role === 'MIDDLEMAN'
+              {isSwitching
+                ? 'Switching...'
+                : role === 'MIDDLEMAN'
                 ? 'Middleman'
                 : role === 'ADMIN'
                 ? 'Supervisor'
                 : 'Farmer'}
             </Text>
-            <ChevronDown size={13} color={colors.textSecondary} />
+            {isSwitching ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <ChevronDown size={13} color={colors.textSecondary} />
+            )}
           </TouchableOpacity>
 
           {showRoleMenu && (
@@ -232,8 +256,14 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
               <TouchableOpacity
                 style={[styles.roleMenuItem, role === 'FARMER' && styles.roleMenuItemActive]}
                 onPress={() => handleRoleSwitch('FARMER')}
+                disabled={isSwitching}
               >
-                <Text style={styles.roleMenuItemText}>🌾 Farmer (Ramesh)</Text>
+                <View style={styles.roleMenuItemRow}>
+                  <Text style={[styles.roleMenuItemText, role === 'FARMER' && styles.roleMenuItemTextActive]}>
+                    🌾 Farmer (Ramesh)
+                  </Text>
+                  {role === 'FARMER' && <Check size={13} color={colors.primary} />}
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -241,14 +271,26 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
                   role === 'MIDDLEMAN' && styles.roleMenuItemActive,
                 ]}
                 onPress={() => handleRoleSwitch('MIDDLEMAN')}
+                disabled={isSwitching}
               >
-                <Text style={styles.roleMenuItemText}>🤝 Middleman (Kishore)</Text>
+                <View style={styles.roleMenuItemRow}>
+                  <Text style={[styles.roleMenuItemText, role === 'MIDDLEMAN' && styles.roleMenuItemTextActive]}>
+                    🤝 Middleman (Kishore)
+                  </Text>
+                  {role === 'MIDDLEMAN' && <Check size={13} color={colors.primary} />}
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.roleMenuItem, role === 'ADMIN' && styles.roleMenuItemActive]}
                 onPress={() => handleRoleSwitch('ADMIN')}
+                disabled={isSwitching}
               >
-                <Text style={styles.roleMenuItemText}>🛡️ Admin (Supervisor)</Text>
+                <View style={styles.roleMenuItemRow}>
+                  <Text style={[styles.roleMenuItemText, role === 'ADMIN' && styles.roleMenuItemTextActive]}>
+                    🛡️ Admin (Supervisor)
+                  </Text>
+                  {role === 'ADMIN' && <Check size={13} color={colors.primary} />}
+                </View>
               </TouchableOpacity>
             </View>
           )}
@@ -430,10 +472,20 @@ const styles = StyleSheet.create({
   roleMenuItemActive: {
     backgroundColor: colors.primarySoft,
   },
+  roleMenuItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   roleMenuItemText: {
     fontSize: 12,
     fontWeight: '600',
     color: colors.textPrimary,
+  },
+  roleMenuItemTextActive: {
+    color: colors.primaryDark,
+    fontWeight: '700',
   },
   iconBtn: {
     width: 36,
