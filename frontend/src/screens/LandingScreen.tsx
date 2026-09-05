@@ -8,6 +8,7 @@ import {
   TextInput,
   Modal,
   Platform,
+  Image,
 } from 'react-native';
 import {
   Sparkles,
@@ -74,26 +75,16 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
             style={styles.logoRow}
             onPress={() => onNavigate('landing')}
             activeOpacity={0.8}
+            accessibilityLabel="PashuPehchan Home"
           >
-            <View style={styles.logoIcon}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 18C8 18 12 14 12 6C12 14 16 18 20 18"
-                  stroke="#16A34A"
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M12 6V20"
-                  stroke="#16A34A"
-                  strokeWidth="3.2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </View>
+            <Image
+              source={{ uri: '/logo.png' }}
+              style={styles.navLogoImage}
+              resizeMode="contain"
+            />
             <View>
-              <Text style={styles.logoText}>Farm Mōra</Text>
-              <Text style={styles.logoSubText}>PASHU PEHCHAN</Text>
+              <Text style={styles.logoText}>PashuPehchan</Text>
+              <Text style={styles.logoSubText}>AI LIVESTOCK PLATFORM</Text>
             </View>
           </TouchableOpacity>
 
@@ -808,9 +799,16 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onNavigate }) => {
       {/* ================= 8. FOOTER ================= */}
       <View style={styles.footer}>
         <View style={styles.footerTop}>
-          <View>
-            <Text style={styles.footerLogoText}>Farm Mōra • PashuPehchan</Text>
-            <Text style={styles.footerLogoSub}>Smart Livestock & Farmland Management Platform</Text>
+          <View style={styles.footerBrandRow}>
+            <Image
+              source={{ uri: '/logo.png' }}
+              style={styles.footerLogoImage}
+              resizeMode="contain"
+            />
+            <View>
+              <Text style={styles.footerLogoText}>PashuPehchan</Text>
+              <Text style={styles.footerLogoSub}>National AI Livestock Breed Verification Platform</Text>
+            </View>
           </View>
           <View style={styles.footerLinks}>
             <TouchableOpacity onPress={() => onNavigate('breeds')}><Text style={styles.footerLink}>Breeds</Text></TouchableOpacity>
@@ -951,20 +949,15 @@ const styles = StyleSheet.create({
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
-  logoIcon: {
-    width: 38,
-    height: 38,
+  navLogoImage: {
+    width: 44,
+    height: 44,
     borderRadius: 12,
-    backgroundColor: '#EDF9F1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#C2E7D1',
   },
   logoText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
     color: '#0F3D24',
     letterSpacing: -0.3,
@@ -1784,6 +1777,16 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(255, 255, 255, 0.15)',
     paddingBottom: 28,
     marginBottom: 24,
+  },
+  footerBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  footerLogoImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
   },
   footerLogoText: {
     fontSize: 18,

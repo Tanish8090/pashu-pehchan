@@ -180,7 +180,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           activeOpacity={0.8}
         >
           <Sparkles size={11} color={colors.primary} />
-          <Text style={styles.landingLinkText}>Farm Mōra Landing Page ↗</Text>
+          <Text style={styles.landingLinkText}>PashuPehchan Landing ↗</Text>
         </TouchableOpacity>
 
         <View style={styles.icarBadgeRow}>
