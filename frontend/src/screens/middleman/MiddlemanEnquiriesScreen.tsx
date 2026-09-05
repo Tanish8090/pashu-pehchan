@@ -180,10 +180,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 14,
+    padding: 16,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.borderLight,
   },
   backBtn: {
     flexDirection: 'row',
@@ -196,13 +196,13 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   headerTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
     color: colors.textPrimary,
   },
   list: {
-    padding: 14,
-    gap: 12,
+    padding: 16,
+    gap: 14,
   },
   desktopList: {
     flexDirection: 'row',
@@ -212,11 +212,12 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.surface,
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 16,
+    padding: 16,
     borderWidth: 1,
-    borderColor: colors.border,
-    gap: 10,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
+    gap: 12,
   },
   cardTop: {
     flexDirection: 'row',
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listingTitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
     color: colors.textPrimary,
   },
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
   statusPill: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 8,
     backgroundColor: colors.warningBg,
   },
   statusText: {
@@ -248,16 +249,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#f8faf9',
-    padding: 8,
-    borderRadius: 6,
+    backgroundColor: colors.surfaceSubtle,
+    padding: 10,
+    borderRadius: 10,
   },
   priceLabel: {
     fontSize: 12,
     color: colors.textSecondary,
   },
   priceVal: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
     color: colors.primaryDark,
   },
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
     color: colors.textPrimary,
-    lineHeight: 16,
+    lineHeight: 17,
   },
   cardFooter: {
     flexDirection: 'row',
@@ -273,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: colors.borderLight,
-    paddingTop: 8,
+    paddingTop: 10,
   },
   dateText: {
     fontSize: 11,
@@ -284,9 +285,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     backgroundColor: colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+    boxShadow: '0 2px 4px rgba(45, 139, 117, 0.25)',
   },
   callBtnText: {
     fontSize: 11,
@@ -304,11 +306,12 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     backgroundColor: colors.surface,
-    padding: 30,
-    borderRadius: 14,
+    padding: 32,
+    borderRadius: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
     gap: 8,
   },
   emptyTitle: {

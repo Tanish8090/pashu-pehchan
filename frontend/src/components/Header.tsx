@@ -174,8 +174,8 @@ export const Header: React.FC<HeaderProps> = ({
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomWidth: 0,
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.04)',
     paddingHorizontal: 16,
     paddingVertical: 12,
     zIndex: 100,
@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   headerLogoImage: {
-    width: 64,
-    height: 64,
+    width: 60,
+    height: 60,
   },
   rightActions: {
     flexDirection: 'row',
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 14,
   },
   roleText: {
@@ -223,28 +223,24 @@ const styles = StyleSheet.create({
   },
   roleMenu: {
     position: 'absolute',
-    top: 32,
+    top: 34,
     right: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 4,
-    width: 170,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
+    width: 180,
+    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.12)',
     zIndex: 102,
   },
   roleMenuItem: {
     paddingVertical: 8,
     paddingHorizontal: 10,
-    borderRadius: 6,
+    borderRadius: 8,
   },
   roleMenuItemActive: {
-    backgroundColor: colors.primarySoft,
+    backgroundColor: colors.sidebarActiveBg,
   },
   roleMenuItemRow: {
     flexDirection: 'row',
@@ -295,9 +291,9 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   iconButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 6,
+    width: 34,
+    height: 34,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceSubtle,
@@ -309,3 +305,4 @@ const styles = StyleSheet.create({
     borderColor: colors.primaryBorder,
   },
 });
+

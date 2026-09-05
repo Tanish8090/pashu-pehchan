@@ -81,14 +81,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tierBadge: {
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 6,
   },
   tierText: {
     fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.3,
+    letterSpacing: 0.4,
   },
   percentText: {
     fontSize: 13,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   track: {
     width: '100%',
-    backgroundColor: '#e5e9e6',
+    backgroundColor: colors.borderLight,
     borderRadius: 999,
     overflow: 'hidden',
   },

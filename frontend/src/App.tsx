@@ -438,7 +438,7 @@ export default App;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.background,
   },
 
   /* Desktop Webapp Styles */
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: '100vh',
-    backgroundColor: '#f1f5f3',
+    backgroundColor: colors.background,
     overflow: 'hidden',
   },
   desktopMainArea: {
@@ -468,8 +468,8 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 1720,
     marginHorizontal: 'auto' as any,
-    paddingHorizontal: 32,
-    paddingVertical: 24,
+    paddingHorizontal: 36,
+    paddingVertical: 28,
     minHeight: '100%',
   },
 
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#e6ece8',
+    backgroundColor: colors.surfaceSubtle,
     width: '100%',
   },
   mobileAppContainer: {
@@ -486,10 +486,7 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     flex: 1,
     backgroundColor: colors.background,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    boxShadow: '0 4px 20px rgba(45, 139, 117, 0.15)',
     overflow: 'hidden',
     position: 'relative',
     ...(Platform.OS === 'web'
@@ -506,25 +503,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* Toast Notification */
+  /* Toast Notification — Warm pill-shaped */
   toastContainer: {
     position: 'absolute',
-    bottom: 24,
-    right: 24,
+    bottom: 28,
+    right: 28,
     backgroundColor: colors.primaryDark,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 22,
+    borderRadius: 14,
+    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.18)',
     zIndex: 999,
   },
   toastText: {
-    color: '#ffffff',
+    color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '700',
     textAlign: 'center',
   },
 });
+

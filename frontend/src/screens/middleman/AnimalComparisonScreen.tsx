@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 14,
+    padding: 16,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.borderLight,
   },
   backBtn: {
     flexDirection: 'row',
@@ -250,10 +250,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   clearBtn: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#f1f5f3',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: colors.surfaceSubtle,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   clearText: {
     fontSize: 11,
@@ -263,20 +265,21 @@ const styles = StyleSheet.create({
   titleBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    padding: 14,
+    gap: 12,
+    padding: 16,
     backgroundColor: colors.primarySoft,
     borderBottomWidth: 1,
     borderBottomColor: colors.primaryBorder,
   },
   titleText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
     color: colors.primaryDark,
   },
   subtitleText: {
     fontSize: 11,
     color: colors.textSecondary,
+    marginTop: 2,
   },
   desktopContainer: {
     backgroundColor: 'transparent',
@@ -287,7 +290,7 @@ const styles = StyleSheet.create({
     height: 'auto' as any,
   },
   tableScroll: {
-    padding: 14,
+    padding: 16,
   },
   desktopTableScroll: {
     padding: 0,
@@ -302,7 +305,7 @@ const styles = StyleSheet.create({
   },
   cardRow: {
     flexDirection: 'row',
-    gap: 14,
+    gap: 16,
   },
   desktopCardRow: {
     width: '100%',
@@ -310,12 +313,13 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   compareCol: {
-    width: 250,
+    width: 260,
     backgroundColor: colors.surface,
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 16,
+    padding: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
     gap: 12,
   },
   desktopCompareCol: {
@@ -327,18 +331,18 @@ const styles = StyleSheet.create({
   colHeader: {
     alignItems: 'center',
     position: 'relative',
-    paddingBottom: 10,
+    paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderLight,
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#f1f5f3',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.surfaceSubtle,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   colTitle: {
     fontSize: 16,
@@ -348,6 +352,7 @@ const styles = StyleSheet.create({
   colSubtitle: {
     fontSize: 11,
     color: colors.textSecondary,
+    marginTop: 2,
   },
   removeIcon: {
     position: 'absolute',
@@ -356,13 +361,14 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   metricRow: {
-    gap: 2,
+    gap: 3,
   },
   metricLabel: {
     fontSize: 10,
     color: colors.textMuted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    fontWeight: '600',
   },
   priceHighlight: {
     fontSize: 18,
@@ -381,7 +387,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.successBg,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 8,
     alignSelf: 'flex-start',
     marginTop: 2,
   },
@@ -397,8 +403,9 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: colors.primary,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 6,
+    boxShadow: '0 2px 4px rgba(45, 139, 117, 0.25)',
   },
   callSellerText: {
     fontSize: 12,

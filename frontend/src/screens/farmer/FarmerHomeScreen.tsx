@@ -111,7 +111,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
         >
           <View style={styles.statCardHeader}>
             <Text style={styles.statVal}>{dashboard?.total_animals ?? 4}</Text>
-            <View style={[styles.statIconBox, { backgroundColor: '#dcfce7' }]}>
+            <View style={[styles.statIconBox, { backgroundColor: colors.primarySoft }]}>
               <Layers size={16} color={colors.primary} />
             </View>
           </View>
@@ -122,7 +122,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
         <View style={styles.statCard}>
           <View style={styles.statCardHeader}>
             <Text style={[styles.statVal, { color: colors.success }]}>4 / 4</Text>
-            <View style={[styles.statIconBox, { backgroundColor: '#dcfce7' }]}>
+            <View style={[styles.statIconBox, { backgroundColor: colors.successBg }]}>
               <ShieldCheck size={16} color={colors.success} />
             </View>
           </View>
@@ -139,7 +139,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
             <Text style={[styles.statVal, { color: colors.accent }]}>
               {dashboard?.for_sale_count ?? 1}
             </Text>
-            <View style={[styles.statIconBox, { backgroundColor: '#fef3c7' }]}>
+            <View style={[styles.statIconBox, { backgroundColor: colors.accentSoft }]}>
               <ShoppingBag size={16} color={colors.warning} />
             </View>
           </View>
@@ -156,7 +156,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
             <Text style={[styles.statVal, { color: colors.info }]}>
               {dashboard?.pending_enquiries ?? 2}
             </Text>
-            <View style={[styles.statIconBox, { backgroundColor: '#dbeafe' }]}>
+            <View style={[styles.statIconBox, { backgroundColor: colors.infoBg }]}>
               <PhoneCall size={16} color={colors.info} />
             </View>
           </View>
@@ -207,7 +207,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               onPress={() => onNavigate('my_livestock')}
               activeOpacity={0.8}
             >
-              <View style={[styles.tileIcon, { backgroundColor: '#dcfce7' }]}>
+              <View style={[styles.tileIcon, { backgroundColor: colors.primarySoft }]}>
                 <Layers size={22} color={colors.primary} />
               </View>
               <Text style={styles.tileTitle}>Livestock Herd</Text>
@@ -219,7 +219,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               onPress={() => onNavigate('farmer_marketplace')}
               activeOpacity={0.8}
             >
-              <View style={[styles.tileIcon, { backgroundColor: '#fef3c7' }]}>
+              <View style={[styles.tileIcon, { backgroundColor: colors.accentSoft }]}>
                 <ShoppingBag size={22} color={colors.warning} />
               </View>
               <Text style={styles.tileTitle}>Marketplace</Text>
@@ -231,7 +231,7 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               onPress={() => onNavigate('vets')}
               activeOpacity={0.8}
             >
-              <View style={[styles.tileIcon, { backgroundColor: '#dbeafe' }]}>
+              <View style={[styles.tileIcon, { backgroundColor: colors.infoBg }]}>
                 <Stethoscope size={22} color={colors.info} />
               </View>
               <Text style={styles.tileTitle}>Find a Vet</Text>
@@ -243,8 +243,8 @@ export const FarmerHomeScreen: React.FC<FarmerHomeScreenProps> = ({ onNavigate }
               onPress={() => onNavigate('breeds')}
               activeOpacity={0.8}
             >
-              <View style={[styles.tileIcon, { backgroundColor: '#f3e8ff' }]}>
-                <ShieldCheck size={22} color="#7c3aed" />
+              <View style={[styles.tileIcon, { backgroundColor: colors.buffaloBg }]}>
+                <ShieldCheck size={22} color={colors.buffaloBadge} />
               </View>
               <Text style={styles.tileTitle}>Breed Encyclopedia</Text>
               <Text style={styles.tileSub}>41 ICAR official standards</Text>
@@ -439,18 +439,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 14,
+    padding: 18,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 10px rgba(45, 139, 117, 0.08)',
   },
   desktopWelcomeCard: {
-    padding: 20,
-    borderRadius: 14,
+    padding: 22,
+    borderRadius: 18,
   },
   welcomeTextCol: {
     flex: 1,
-    gap: 4,
+    gap: 6,
   },
   welcomeTitleRow: {
     flexDirection: 'row',
@@ -459,18 +460,18 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   greetingText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '800',
-    color: colors.primaryDark,
+    color: colors.textPrimary,
   },
   districtBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
     backgroundColor: colors.primarySoft,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
   },
@@ -480,17 +481,18 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
   },
   welcomeSub: {
-    fontSize: 12,
+    fontSize: 13,
     color: colors.textSecondary,
     marginTop: 2,
+    lineHeight: 18,
   },
   govEmblemBox: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primarySoft,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
   },
@@ -500,7 +502,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   govEmblemText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
     color: colors.primaryDark,
   },
@@ -511,7 +513,7 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 14,
     flexWrap: 'wrap',
   },
   desktopStatsRow: {
@@ -521,10 +523,11 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 160,
     backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 12,
+    padding: 18,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
     gap: 4,
   },
   statCardHeader: {
@@ -533,19 +536,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statVal: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '800',
     color: colors.primary,
   },
   statIconBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
+    width: 34,
+    height: 34,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   statLbl: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
     color: colors.textPrimary,
   },
@@ -564,14 +567,14 @@ const styles = StyleSheet.create({
   },
   primaryCol: {
     flex: 1,
-    gap: 18,
+    gap: 20,
   },
   desktopPrimaryCol: {
     flex: 65,
   },
   secondaryCol: {
     flex: 1,
-    gap: 18,
+    gap: 20,
   },
   desktopSecondaryCol: {
     flex: 35,
@@ -581,13 +584,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.primaryDark,
-    borderRadius: 14,
-    padding: 20,
-    elevation: 3,
-    shadowColor: '#14532d',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    borderRadius: 18,
+    padding: 22,
+    boxShadow: '0 6px 14px rgba(30, 92, 78, 0.25)',
   },
   heroLeft: {
     flex: 1,
@@ -596,53 +595,54 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   cameraIconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.primaryLight,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
   },
   heroTextCol: {
     flex: 1,
-    gap: 4,
+    gap: 6,
   },
   heroPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
+    gap: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
     alignSelf: 'flex-start',
   },
   heroPillText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.primaryDark,
   },
   heroTitle: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
     color: '#ffffff',
   },
   heroDesc: {
     fontSize: 12,
-    color: '#e2e8e4',
-    lineHeight: 16,
+    color: 'rgba(255, 255, 255, 0.85)',
+    lineHeight: 17,
   },
   heroArrowBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 12,
+    marginLeft: 14,
   },
   sectionHeading: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '800',
     color: colors.textPrimary,
   },
@@ -667,10 +667,11 @@ const styles = StyleSheet.create({
   actionTile: {
     width: '48%',
     backgroundColor: colors.surface,
-    padding: 14,
-    borderRadius: 12,
+    padding: 16,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
     gap: 6,
   },
   desktopActionTile: {
@@ -678,9 +679,9 @@ const styles = StyleSheet.create({
     width: 'auto',
   },
   tileIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
@@ -693,9 +694,10 @@ const styles = StyleSheet.create({
   tileSub: {
     fontSize: 11,
     color: colors.textMuted,
+    lineHeight: 15,
   },
   animalList: {
-    gap: 10,
+    gap: 12,
   },
   desktopAnimalList: {
     flexDirection: 'row',
@@ -706,10 +708,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.surface,
-    padding: 14,
-    borderRadius: 12,
+    padding: 16,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
     width: '100%',
   },
   desktopAnimalCard: {
@@ -718,13 +721,13 @@ const styles = StyleSheet.create({
   animalCardLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
   animalThumb: {
-    width: 46,
-    height: 46,
-    borderRadius: 10,
-    backgroundColor: '#f1f5f3',
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: colors.surfaceSubtle,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -739,11 +742,13 @@ const styles = StyleSheet.create({
   animalTag: {
     fontSize: 11,
     color: colors.textSecondary,
+    marginTop: 2,
   },
   animalYield: {
     fontSize: 11,
     fontWeight: '600',
     color: colors.primary,
+    marginTop: 2,
   },
   animalCardRight: {
     flexDirection: 'row',
@@ -755,9 +760,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     backgroundColor: colors.successBg,
-    paddingHorizontal: 7,
+    paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 8,
   },
   verifiedText: {
     fontSize: 10,
@@ -766,10 +771,11 @@ const styles = StyleSheet.create({
   },
   emptyCard: {
     backgroundColor: colors.surface,
-    padding: 24,
-    borderRadius: 12,
+    padding: 28,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.subtle || '0 2px 6px rgba(45, 139, 117, 0.08)',
     alignItems: 'center',
   },
   emptyTitle: {
@@ -787,10 +793,11 @@ const styles = StyleSheet.create({
   /* Secondary Column Widgets */
   quickScanWidget: {
     backgroundColor: colors.surface,
-    borderRadius: 14,
-    padding: 18,
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
     gap: 12,
   },
   widgetHeader: {
@@ -810,29 +817,29 @@ const styles = StyleSheet.create({
   },
   widgetBadge: {
     backgroundColor: colors.primarySoft,
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
   },
   widgetBadgeText: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '700',
     color: colors.primaryDark,
   },
   widgetSub: {
-    fontSize: 11,
+    fontSize: 12,
     color: colors.textSecondary,
-    lineHeight: 15,
+    lineHeight: 16,
   },
   widgetDropzone: {
     backgroundColor: colors.primarySoft,
     borderWidth: 2,
     borderColor: colors.primaryBorder,
     borderStyle: 'dashed' as any,
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 14,
+    padding: 22,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
@@ -847,25 +854,25 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   sampleRow: {
-    gap: 6,
+    gap: 8,
   },
   sampleLabel: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.textSecondary,
   },
   sampleChips: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
   },
   sampleChip: {
     backgroundColor: colors.surfaceSubtle,
     borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+    borderColor: colors.borderLight,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
   },
   sampleChipText: {
     fontSize: 11,
@@ -876,10 +883,11 @@ const styles = StyleSheet.create({
   /* Veterinary Widget */
   vetWidget: {
     backgroundColor: colors.surface,
-    borderRadius: 14,
-    padding: 18,
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderLight,
+    boxShadow: colors.shadows?.card || '0 2px 8px rgba(45, 139, 117, 0.08)',
     gap: 8,
   },
   vetWidgetHeader: {
@@ -898,15 +906,15 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   emergencyPill: {
-    backgroundColor: '#fee2e2',
-    paddingHorizontal: 6,
+    backgroundColor: colors.dangerBg,
+    paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 6,
   },
   emergencyPillText: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '800',
-    color: '#b91c1c',
+    color: colors.danger,
   },
   vetClinicName: {
     fontSize: 13,
@@ -916,7 +924,7 @@ const styles = StyleSheet.create({
   vetClinicAddress: {
     fontSize: 11,
     color: colors.textSecondary,
-    lineHeight: 14,
+    lineHeight: 15,
   },
   vetDistance: {
     fontSize: 11,
@@ -937,8 +945,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     borderWidth: 1,
     borderColor: colors.primaryBorder,
-    paddingVertical: 8,
-    borderRadius: 6,
+    paddingVertical: 9,
+    borderRadius: 10,
   },
   vetCallText: {
     fontSize: 11,
@@ -952,8 +960,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     backgroundColor: colors.info,
-    paddingVertical: 8,
-    borderRadius: 6,
+    paddingVertical: 9,
+    borderRadius: 10,
   },
   vetDirectionsText: {
     fontSize: 11,
@@ -966,45 +974,46 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#7f1d1d',
-    padding: 14,
-    borderRadius: 12,
+    backgroundColor: '#991B1B',
+    padding: 16,
+    borderRadius: 16,
+    boxShadow: '0 4px 8px rgba(153, 27, 27, 0.3)',
   },
   emergencyLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
     flex: 1,
   },
   emergencyIconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 8,
-    backgroundColor: '#dc2626',
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: '#DC2626',
     alignItems: 'center',
     justifyContent: 'center',
   },
   emergencyTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '800',
     color: '#ffffff',
   },
   emergencySub: {
-    fontSize: 10,
-    color: '#fca5a5',
+    fontSize: 11,
+    color: '#FEE2E2',
   },
   callNowBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     backgroundColor: '#ffffff',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
   },
   callNowText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#7f1d1d',
+    color: '#991B1B',
   },
 });
